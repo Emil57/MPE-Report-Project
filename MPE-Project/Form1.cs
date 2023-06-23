@@ -18,7 +18,7 @@ namespace MPE_Project
         DataTable MpeDataTable = new DataTable();
         IEnumerable<DataColumn> MpeBinsFilteredRows = new List<DataColumn>();  //variable to support on mpe process
         IEnumerable<object> MpeGMAVsFilteredValues = new List<object>();        //variable to support on mpe process
-        DataRow[] PowerBIFilteredRows = new DataRow[1];                          //variable to support on mpe process
+        DataRow[] PowerBIFilteredRowsByPnAndWeek = new DataRow[1];                          //variable to support on mpe process
         public Form1()
         {
             InitializeComponent();
@@ -116,12 +116,12 @@ namespace MPE_Project
                 .Where(column => column.ColumnName.EndsWith("_Number") || column.ColumnName.EndsWith("_Name"));
             // Retrieve the values of the filtered columns
             // Output the column values
-            
+            /*
             foreach (var value in MpeBinsFilteredRows)
             {
                 Debug.WriteLine(value);
             }
-            
+            */
         }
 
         private void PowerBIProcess()
@@ -133,21 +133,28 @@ namespace MPE_Project
             PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI Path"]);
             //PrintDataTable(dataTable);
 
-            //Step 4: Filter PowerBI file by PN and week
+            //Step 4: Filter PowerBI file rows by PN and week
             string filter = "[MPN] LIKE '%" + comboBox1.Text + "%' AND [Date Code] LIKE '%" + comboBox2.Text + "%'";
-            PowerBIFilteredRows = PowerBIDataTable.Select(filter);
+            PowerBIFilteredRowsByPnAndWeek = PowerBIDataTable.Select(filter);
             /* Just for view/debug
             foreach(DataRow row in PowerBIFilteredRows)
             {
                 Debug.WriteLine(row["Lot Code"]);
             }
-            //CSVTable(csv); 
             */
 
-            //Step 5: Remove columns 'CPN' and 'Program Name' from filtered rows
-            //These columns of PowerBI file are empty and are not necessary
-            PowerBIFilteredRows[0].Table.Columns.Remove("CPN");
-            PowerBIFilteredRows[0].Table.Columns.Remove("Program Name");
+            //Step 5: Remove columns that we don't need for the report
+            //These columns of PowerBI file are either empty or not necessary
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("CPN");
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("Program Name");
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("Test - Volume In");
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("Test - Volume Out");
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("Test Yield");
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("SAP - Volume In");
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("SAP - Volume Out");
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove("SAP Yield");
+
+
         }
 
         private void SearchForGmavsInPowerBIFile()
@@ -157,7 +164,7 @@ namespace MPE_Project
             var PowerBIGmavList = PowerBIDataTable.Columns
                 .Cast<DataColumn>()
                 .Where(column => column.ColumnName.Contains("Bin")); //Get columns containing 'Bin' word in the header name
-            var PowerBIGmavValues = PowerBIGmavList.Select(column => PowerBIFilteredRows[0][column]); //Get values from the Bin columns
+            var PowerBIGmavValues = PowerBIGmavList.Select(column => PowerBIFilteredRowsByPnAndWeek[0][column]); //Get values from the Bin columns
 
             var MpeListOfGmavs = MpeDataTable.Columns.Cast<DataColumn>()
                .Where(column => (column.ColumnName.EndsWith("_Number") || column.ColumnName.EndsWith("_Name")) && MpeDataTable.AsEnumerable()
@@ -180,13 +187,13 @@ namespace MPE_Project
                 string BinName = PowerBIGmavList.ElementAt(count + 1).ToString();
                 string BinFailureRate = PowerBIGmavList.ElementAt(count + 2).ToString();
                 string BinSbl = PowerBIGmavList.ElementAt(count + 3).ToString();
+                //Delete the columns on PowerBI that we don't need 
                 while (!BinNumber.Equals(BinNumberConcatenationReference))
                 {
-
-                    PowerBIFilteredRows[0].Table.Columns.Remove(BinNumber);
-                    PowerBIFilteredRows[0].Table.Columns.Remove(BinName);
-                    PowerBIFilteredRows[0].Table.Columns.Remove(BinFailureRate);
-                    PowerBIFilteredRows[0].Table.Columns.Remove(BinSbl);
+                    PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove(BinNumber);
+                    PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove(BinName);
+                    PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove(BinFailureRate);
+                    PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove(BinSbl);
                     BinNumber = PowerBIGmavList.ElementAt(count).ToString();
                     BinName = PowerBIGmavList.ElementAt(count + 1).ToString();
                     BinFailureRate = PowerBIGmavList.ElementAt(count + 2).ToString();
