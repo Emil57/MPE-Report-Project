@@ -156,7 +156,7 @@ namespace MPE_Project
             /*For this process, we will look into PowerBI file and delete columns which don't contain the necessary information for the pn report */
             var PowerBIGmavList = PowerBIDataTable.Columns
                 .Cast<DataColumn>()
-                .Where(column => column.ColumnName.Contains("_Number")); //Get columns containing 'Bin' word in the header name
+                .Where(column => column.ColumnName.Contains("Bin")); //Get columns containing 'Bin' word in the header name
             var PowerBIGmavValues = PowerBIGmavList.Select(column => PowerBIFilteredRows[0][column]); //Get values from the Bin columns
 
             var MpeListOfGmavs = MpeDataTable.Columns.Cast<DataColumn>()
@@ -166,32 +166,33 @@ namespace MPE_Project
                 .Select(column => MpeDataTable.Rows[0][column])
                 .Where(column => !string.IsNullOrEmpty(column.ToString())); //Get bin_number and bin_name columns with data from mpe file 
             //var alo = MpeBinNumberValues.Where(column => !string.IsNullOrEmpty(column.ToString()));
+            int count = 0;
 
             //Iterate over Gmav column header names
             foreach (var bin in MpeListOfGmavs.Where(column => column.ColumnName.EndsWith("_Number")))
             {
+
                 Debug.WriteLine("MPE column reference: " + bin);
                 Debug.WriteLine(MpeDataTable.Rows[0][bin]);
-                string BinNumberConcatenation = "Bin" + MpeDataTable.Rows[0][bin] + "_Number";
-                string BinNameConcatenation = "Bin" + MpeDataTable.Rows[0][bin] + "_Name";
-                string BinFailureRateConcatenation = "Bin" + MpeDataTable.Rows[0][bin] + "_%";
-                string BinSblConcatenation = "Bin" + MpeDataTable.Rows[0][bin] + "_SBL";
-                int count = 0;
-                while(count<=PowerBIGmavList.Count())
+                string BinNumberConcatenationReference = "Bin" + MpeDataTable.Rows[0][bin] + "_Number";
+                
+                string BinNumber = PowerBIGmavList.ElementAt(count).ToString();
+                string BinName = PowerBIGmavList.ElementAt(count + 1).ToString();
+                string BinFailureRate = PowerBIGmavList.ElementAt(count + 2).ToString();
+                string BinSbl = PowerBIGmavList.ElementAt(count + 3).ToString();
+                while (!BinNumber.Equals(BinNumberConcatenationReference))
                 {
-                    if (PowerBIGmavList.ElementAt(count).Equals(BinNumberConcatenation))
-                    {
-                        break; 
-                    }
-                    else
-                    {
-                        PowerBIFilteredRows[0].Table.Columns.Remove(BinNumberConcatenation);
-                        PowerBIFilteredRows[0].Table.Columns.Remove(BinNameConcatenation);
-                        PowerBIFilteredRows[0].Table.Columns.Remove(BinFailureRateConcatenation);
-                        PowerBIFilteredRows[0].Table.Columns.Remove(BinSblConcatenation);
-                    }
-                    count++;
+
+                    PowerBIFilteredRows[0].Table.Columns.Remove(BinNumber);
+                    PowerBIFilteredRows[0].Table.Columns.Remove(BinName);
+                    PowerBIFilteredRows[0].Table.Columns.Remove(BinFailureRate);
+                    PowerBIFilteredRows[0].Table.Columns.Remove(BinSbl);
+                    BinNumber = PowerBIGmavList.ElementAt(count).ToString();
+                    BinName = PowerBIGmavList.ElementAt(count + 1).ToString();
+                    BinFailureRate = PowerBIGmavList.ElementAt(count + 2).ToString();
+                    BinSbl = PowerBIGmavList.ElementAt(count + 3).ToString();
                 }
+                count += 4;
             }
 
         }
