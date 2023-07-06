@@ -3,45 +3,10 @@ using System.Diagnostics;
 using System.Data;
 using System.IO;
 using System.Globalization;
+using OfficeOpenXml;
 
 public class CsvFiles
 {
-    //Structure of each row for csv file
-    public string SupplierName = "Skyworks Solutions";
-    public string ComponentType = "ASIC";
-    public string? APN;
-    public string? MPN;
-    public string? ProgramName;
-    public string? Lot;
-    public string? DateCode;
-    public string TestStep = "ATE";
-    public string? TesterPlatform;
-    public string? TesterProgramName;   
-    public string? ManufacturingFlow;   
-    public string? DateTested;
-    public int? LotQty;
-    public double? Yield;
-    public int? SYL;
-
-    public string? BinX2_Number;
-    public string? BinX2_Name;
-    public string? BinX2_P;
-    public string? BinX2_SBL;
-
-    public static void CSVTable(string filePath)
-    {
-        Debug.WriteLine("Creating CSV table" + Path.GetFullPath(filePath));
-        DataTable mpeRows = LoadCsvFile(Path.GetFullPath(filePath));
-        /*
-        // Process the loaded rows
-        foreach (var row in mpeRows)
-        {
-            Debug.WriteLine(count + $": {row.SupplierName}, {row.ComponentType}, {row.APN}, {row.MPN}, {row.ProgramName}, {row.Lot}");
-            count++;
-        }
-        */
-    }
-
     public static DataTable LoadCsvFile(string filePath)
     {
         DataTable dataTable = new DataTable();
@@ -73,5 +38,37 @@ public class CsvFiles
         }
         Debug.WriteLine("CSV File succesfully loaded to DataTable!");
         return dataTable;
+    }
+
+    public static void WriteCsvFile(ExcelWorksheet MPEws, string NewMpeFilePath)
+    {
+        var formatOut = new ExcelOutputTextFormat
+        {
+            Delimiter = ',',
+        };
+        if (File.Exists(NewMpeFilePath))
+        {
+            File.Delete(NewMpeFilePath);
+        }
+        var file = new FileInfo(NewMpeFilePath);
+        MPEws.Cells[1, 1, MPEws.Dimension.Rows, MPEws.Dimension.Columns].SaveToText(file, formatOut);
+        Debug.WriteLine("File " + Path.GetFileName(NewMpeFilePath) + " Closed!");
+    }
+
+    public static void ExportCsvFile(DataRow[] dataRows, string filePath)
+    {
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            // Write header row
+            writer.WriteLine(string.Join(",", dataRows[0].Table.Columns.Cast<DataColumn>().Select(col => col.ColumnName)));
+
+            // Write data rows
+            foreach (DataRow row in dataRows)
+            {
+                writer.WriteLine(string.Join(",", row.ItemArray));
+            }
+        }
+
+        Debug.WriteLine("CSV file exported successfully.");
     }
 }
