@@ -21,11 +21,11 @@ namespace MPE_Project
         private readonly Dictionary<string, string> FilesPathList = new(); // list of path files involved in the project
         DataTable PowerBIDataTable = new DataTable();
         DataTable MpeDataTable = new DataTable();
-        String[] ListOfColumnsToDelete = new String[]
+        readonly String[] ListOfColumnsToDelete = new String[]
         {
-            "CPN", "Program Name", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield"
+            "CPN", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield", "Equipment", "SummaryUsed"
         };
-        string xcode,apn = "";
+        object xcode,apn = "";
         List<DataTable> OffshoreDataTable = new();
         IEnumerable<DataColumn> MpeBinsFilteredRows = new List<DataColumn>();  //variable to support on mpe process
         DataRow[] PowerBIFilteredRowsByPnAndWeek = new DataRow[1];                          //variable to support on mpe process
@@ -115,13 +115,59 @@ namespace MPE_Project
             //No longer needed
             //RemoveDuplicates();
 
+            RenameColumnsOfPowerBI();
+
             //Export MPE file
             //Get week number 
             string weekNumber = GetWeekNumber();
             string path = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\", MpeDataTable.Rows[0]["Program Name"], "_", MpeDataTable.Rows[0]["MPN"], "_", MpeDataTable.Rows[0]["APN"], "_WW", weekNumber, "-mpe-raw.csv");
             ExportCsvFile(PowerBIFilteredRowsByPnAndWeek, path);
             MessageBox.Show("MPE Report Succesfully Done!" + "\n" + "New path: " + path, "Results", MessageBoxButtons.OK);
-        
+        }
+
+        private void RenameColumnsOfPowerBI()
+        {
+            //Step 1: Rename bin column names in power bi file
+            var BinHeaderColumns = PowerBIDataTable.Columns
+                .Cast<DataColumn>()
+                .Where(column => column.ColumnName.Contains("Bin")); //Get columns containing '_Number' word in the header name
+            byte BinNumber = 2;
+            for (byte BinStart = 0; BinStart < BinHeaderColumns.Count(); BinStart++)
+            {
+                string bin = "BinX" + BinNumber + "_Number";
+                //var column = PowerBIFilteredRowsByPnAndWeek[0].Table.Columns;
+                BinHeaderColumns.ElementAt(BinStart).ColumnName = bin; 
+                //column[BinStart].ColumnName = bin;
+                BinStart++;               
+                bin = "BinX" + BinNumber + "_Name";
+                BinHeaderColumns.ElementAt(BinStart).ColumnName = bin;
+                BinStart++;
+                bin = "BinX" + BinNumber + "_%";
+                BinHeaderColumns.ElementAt(BinStart).ColumnName = bin;
+                BinStart++;
+                bin = "BinX" + BinNumber + "_SBL";
+                BinHeaderColumns.ElementAt(BinStart).ColumnName = bin;
+                BinNumber++;
+            }
+
+            //Step 2: Round values for yield % column and _% and _SBL columns to 2 decimals
+            var ListOfBinData = PowerBIDataTable.Columns
+                .Cast<DataColumn>()
+                .Where(column => column.ColumnName.Contains("_%") || column.ColumnName.EndsWith("_SBL"));
+            short a = 0;
+            foreach (DataRow row in PowerBIFilteredRowsByPnAndWeek)
+            {
+
+                object value = row["Yield %"];
+                double valueRounded = Math.Round(Convert.ToDouble(value.ToString()), 2);
+                row["Yield %"] = valueRounded;
+                foreach (DataColumn column in ListOfBinData)
+                {
+                    value = row[column];
+                    valueRounded = Math.Round(Convert.ToDouble(value.ToString()), 2);
+                    row[column] = valueRounded;
+                }
+            }
         }
 
         private void MpeProcess()
@@ -149,17 +195,35 @@ namespace MPE_Project
                 Debug.WriteLine(value);
             }
             */
+
+            //Step 3: Get XCode and APN
+            try
+            {
+                xcode = MpeDataTable.Rows[0]["Program Name"];
+                apn = MpeDataTable.Rows[0]["APN"];
+
+            }
+            catch (NullReferenceException ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+
+
+
         }
         private void PowerBIProcess()
         {
             //Here is where we call the main process for PowerBI steps
 
-            // Step 3: Load PowerBI file
+            // Step 1: Load PowerBI file
             //This file contains all lots data for GMAV part numbers
             PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI Path"]);
+            //PowerBIDataTable.Columns["Date Tested"].Expression = "CONVERT('Date Tested', 'System.DateTime')";
+
             //PrintDataTable(dataTable);
 
-            //Step 4: Filter PowerBI file rows by PN and week
+            //Step 2: Filter PowerBI file rows by PN and week
             string filter = "[MPN] LIKE '%" + comboBox1.Text + "%' AND [Date Code] LIKE '%" + comboBox2.Text + "%'";
             PowerBIFilteredRowsByPnAndWeek = PowerBIDataTable.Select(filter);
             /* Just for view/debug
@@ -169,19 +233,33 @@ namespace MPE_Project
             }
             */
 
-            //Step 5: Remove columns that we don't need for the report
+            //Step 3: Remove columns that we don't need for the report
             //These columns of PowerBI file are either empty or not necessary
-            foreach(string columnName in ListOfColumnsToDelete)
+            foreach (string columnName in ListOfColumnsToDelete)
             {
                 try
                 {
                     PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove(columnName);
                 }
-                catch(IndexOutOfRangeException ex)
+                catch (IndexOutOfRangeException ex)
                 {
                     Debug.WriteLine(ex.Message);
                 }
             }
+
+            //Step 4: Insert APN and XCode columns in PowerBI file (later exported as MPE report)
+            byte ApnColumnIndex = 2, XcodeColumnIndex = 4;
+            PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Add("APN", typeof(string)).SetOrdinal(ApnColumnIndex);
+            foreach (DataRow row in PowerBIFilteredRowsByPnAndWeek)
+            {
+                row.SetField(ApnColumnIndex, apn.ToString());
+                row.SetField(XcodeColumnIndex, xcode.ToString());
+            }
+
+            
+            
+            
+
         }
         /// <summary>
         /// This method is used to search GMAVs in the PowerBI file using a list of gmavs of the part number extracted by the MPE file

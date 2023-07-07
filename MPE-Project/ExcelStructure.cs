@@ -2,6 +2,8 @@
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
 
 public class ExcelStructure
 {
@@ -11,14 +13,13 @@ public class ExcelStructure
         using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
         {
             ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
-
             DataTable dataTable = new DataTable();
 
             // Load headers
             int totalColumns = worksheet.Dimension.Columns;
             for (int col = 1; col <= totalColumns; col++)
             {
-                string? headerText = worksheet.Cells[1, col].Value?.ToString();
+                string? headerText = worksheet.Cells[1, col].Value?.ToString();               
                 dataTable.Columns.Add(headerText);
             }
 
