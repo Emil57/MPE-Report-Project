@@ -19,13 +19,13 @@ namespace MPE_Project
     public partial class Form1 : Form
     {
         private readonly Dictionary<string, string> FilesPathList = new(); // list of path files involved in the project
-        DataTable PowerBIDataTable = new DataTable();
-        DataTable MpeDataTable = new DataTable();
+        DataTable PowerBIDataTable = new();
+        DataTable MpeDataTable = new();
         readonly String[] ListOfColumnsToDelete = new String[]
         {
             "CPN", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield", "Equipment", "SummaryUsed"
         };
-        object xcode=" ", apn = "";
+        object xcode = " ", apn = "";
         List<DataTable> OffshoreDataTable = new();
         IEnumerable<DataColumn> MpeListOfBins = new List<DataColumn>();  //variable to support on mpe process
         DataRow[] PowerBIFilteredRowsByPnAndWeek = new DataRow[1];             //variable to support on mpe process
@@ -42,7 +42,7 @@ namespace MPE_Project
             //Call web sites
             //CallWebSite();
             //-------------------------------------------------Main code-------------------------------------------------------//
-            //Check the action to performe
+            //Check the action to perform
             if (radioButton1.Checked)
             {
                 //Create MPE
@@ -87,13 +87,13 @@ namespace MPE_Project
                 {
                     FilesPathList.Add(fileType, ofd.FileName);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.WriteLine("Catched the error vro and I fixed: " + ex.Message);
                     FilesPathList.Remove(fileType);
                     FilesPathList.Add(fileType, ofd.FileName);
                 }
-                Debug.WriteLine(fileType +": "+ FilesPathList[fileType]);
+                Debug.WriteLine(fileType + ": " + FilesPathList[fileType]);
                 switch (fileType)
                 {
                     case "MPE FilePath":
@@ -229,15 +229,15 @@ namespace MPE_Project
 
             var MpeListOfBinNumbers = MpeDataTable.Columns
                 .Cast<DataColumn>()
-                .Where(column => column.ColumnName.EndsWith("_Number")  && !string.IsNullOrEmpty(MpeDataTable.Rows[0][column].ToString()) );  //Header names where there is a gmav for Bin_Number (no empty nor null values)
+                .Where(column => column.ColumnName.EndsWith("_Number") && !string.IsNullOrEmpty(MpeDataTable.Rows[0][column].ToString()));  //Header names where there is a gmav for Bin_Number (no empty nor null values)
             var MpeBinNumberValues = MpeListOfBins
                 .Select(column => MpeDataTable.Rows[0][column])
                 .Where(column => !string.IsNullOrEmpty(column.ToString())); //Get bin_number and bin_name columns with data from mpe file 
-            //var alo = MpeBinNumberValues.Where(column => !string.IsNullOrEmpty(column.ToString()));
-            
+                                                                            //var alo = MpeBinNumberValues.Where(column => !string.IsNullOrEmpty(column.ToString()));
+
             //Get the columns to keep in a list. This for PowerBI File
             int count = 0;
-            string Bnumber="", Bname="", Bporcentage="", Btrigger="";
+            string Bnumber = "", Bname = "", Bporcentage = "", Btrigger = "";
             List<string> BinColumnsToKeepInPowerBIFile = new List<string>();
             foreach (string column in MpeBinNumberValues)
             {
@@ -306,7 +306,7 @@ namespace MPE_Project
 
             for (byte BinStart = 0; BinStart < BinHeaderColumns.Count(); BinStart++)
             {
-;                string bin = "BinX" + BinNumber + "_Number";
+                ; string bin = "BinX" + BinNumber + "_Number";
                 //var column = PowerBIFilteredRowsByPnAndWeek[0].Table.Columns;
                 BinHeaderColumns.ElementAt(BinStart).ColumnName = bin;
                 //column[BinStart].ColumnName = bin;
@@ -322,23 +322,26 @@ namespace MPE_Project
                 BinNumber++;
             }
             // Once we have renamed columns according to the report, we need to create and add new columns with the remaining bins (goes from bin 2 to bin 20)
-            for (int i = PowerBIDataTable.Columns.Count; i <92; i += 4)
+            for (int i = PowerBIDataTable.Columns.Count; i < 92; i += 4)
             {
                 string header = "BinX" + BinNumber + "_Number";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i-1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
                 header = "BinX" + BinNumber + "_Name";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i-1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
                 header = "BinX" + BinNumber + "_%";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i-1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
                 header = "BinX" + BinNumber + "_SBL";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i-1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
                 BinNumber++;
             }
 
             //Step 2: Round values for yield % column and _% and _SBL columns to 2 decimals
             var firstRowPowerBI = PowerBIFilteredRowsByPnAndWeek[0];
             var IndexInPowerBIDataTable = PowerBIDataTable.Rows.IndexOf(firstRowPowerBI);
-            var ListOfBinsToConvert = PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Cast<DataColumn>().Where(column => ((column.ColumnName.Contains("_%") || column.ColumnName.Contains("_SBL")) && !string.IsNullOrEmpty(PowerBIDataTable.Rows[IndexInPowerBIDataTable][column.ColumnName].ToString())));
+            var ListOfBinsToConvert = PowerBIFilteredRowsByPnAndWeek[0].Table.Columns
+                .Cast<DataColumn>()
+                .Where(column => ((column.ColumnName.Contains("_%") || column.ColumnName.Contains("_SBL")) && !string.IsNullOrEmpty(PowerBIDataTable.Rows[IndexInPowerBIDataTable][column.ColumnName]
+                .ToString())));
 
             short a = 0;
             foreach (DataRow row in PowerBIFilteredRowsByPnAndWeek)

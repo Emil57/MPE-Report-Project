@@ -88,6 +88,7 @@
             // radioButton2
             // 
             radioButton2.AutoSize = true;
+            radioButton2.Enabled = false;
             radioButton2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             radioButton2.Location = new Point(125, 131);
             radioButton2.Name = "radioButton2";
@@ -226,6 +227,7 @@
             // label2
             // 
             label2.AutoSize = true;
+            label2.Enabled = false;
             label2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             label2.Location = new Point(25, 248);
             label2.Name = "label2";
@@ -235,6 +237,7 @@
             // 
             // button2
             // 
+            button2.Enabled = false;
             button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             button2.Location = new Point(514, 244);
             button2.Name = "button2";
@@ -246,6 +249,7 @@
             // 
             // textBox1
             // 
+            textBox1.Enabled = false;
             textBox1.Location = new Point(119, 244);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(390, 27);
