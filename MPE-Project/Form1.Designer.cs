@@ -60,7 +60,7 @@
             button1.TabIndex = 0;
             button1.Text = "Run";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button1.Click += Button1_Click;
             // 
             // label1
             // 
@@ -96,7 +96,7 @@
             radioButton2.TabIndex = 7;
             radioButton2.Text = "Validate";
             radioButton2.UseVisualStyleBackColor = true;
-            radioButton2.CheckedChanged += radioButton2_CheckedChanged;
+            radioButton2.CheckedChanged += RadioButton2_CheckedChanged;
             // 
             // comboBox1
             // 
@@ -187,7 +187,7 @@
             button5.TabIndex = 15;
             button5.Text = "...";
             button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            button5.Click += Button5_Click;
             // 
             // textBox2
             // 
@@ -215,7 +215,7 @@
             button7.TabIndex = 19;
             button7.Text = "...";
             button7.UseVisualStyleBackColor = true;
-            button7.Click += button7_Click;
+            button7.Click += Button7_Click;
             // 
             // textBox3
             // 
@@ -245,7 +245,7 @@
             button2.TabIndex = 23;
             button2.Text = "...";
             button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            button2.Click += Button2_Click;
             // 
             // textBox1
             // 

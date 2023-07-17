@@ -26,7 +26,7 @@ namespace MPE_Project
             "CPN", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield", "Equipment", "SummaryUsed"
         };
         object xcode = " ", apn = "";
-        List<DataTable> OffshoreDataTable = new();
+        readonly List<DataTable> OffshoreDataTable = new();
         IEnumerable<DataColumn> MpeListOfBins = new List<DataColumn>();  //variable to support on mpe process
         DataRow[] PowerBIFilteredRowsByPnAndWeek = new DataRow[1];             //variable to support on mpe process
         public Form1()
@@ -37,7 +37,7 @@ namespace MPE_Project
         {
 
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             //Call web sites
             //CallWebSite();
@@ -59,17 +59,17 @@ namespace MPE_Project
             }
             //-----------------------------------------------------------------------------------------------------------------//
         }
-        private void button7_Click(object sender, EventArgs e)
+        private void Button7_Click(object sender, EventArgs e)
         {
             //MPE File
             SelectFiles("Select MPE File", "CSV File|*.csv*", "MPE FilePath");
         }
-        private void button5_Click(object sender, EventArgs e)
+        private void Button5_Click(object sender, EventArgs e)
         {
             // Power BI file
             SelectFiles("Select Power BI File", "Excel File|*.xlsx*", "PowerBI FilePath");
         }
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             //Ofshore file 
             SelectFiles("Select Ofshore File", "Excel File|*.xlsx*", "Ofshore FilePath");
@@ -236,10 +236,9 @@ namespace MPE_Project
                                                                             //var alo = MpeBinNumberValues.Where(column => !string.IsNullOrEmpty(column.ToString()));
 
             //Get the columns to keep in a list. This for PowerBI File
-            int count = 0;
             string Bnumber = "", Bname = "", Bporcentage = "", Btrigger = "";
-            List<string> BinColumnsToKeepInPowerBIFile = new List<string>();
-            foreach (string column in MpeBinNumberValues)
+            List<string> BinColumnsToKeepInPowerBIFile = new();
+            foreach (string column in MpeBinNumberValues.Cast<string>())
             {
                 Bnumber = "Bin" + column + "_Number";
                 BinColumnsToKeepInPowerBIFile.Add(Bnumber);
@@ -388,7 +387,7 @@ namespace MPE_Project
             }
             return weekNumber;
         }
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
             //When Validate button is checked
             //Disable PowerBi elements in GUI

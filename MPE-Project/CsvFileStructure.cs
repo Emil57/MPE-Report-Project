@@ -9,7 +9,7 @@ public class CsvFiles
 {
     public static DataTable LoadCsvFile(string filePath)
     {
-        DataTable dataTable = new DataTable();
+        DataTable dataTable = new();
 
         using (var reader  = new StreamReader(filePath))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -57,7 +57,7 @@ public class CsvFiles
 
     public static void ExportCsvFile(DataRow[] dataRows, string filePath)
     {
-        using (StreamWriter writer = new StreamWriter(filePath))
+        using (StreamWriter writer = new(filePath))
         {
             // Write header row
             writer.WriteLine(string.Join(",", dataRows[0].Table.Columns.Cast<DataColumn>().Select(col => col.ColumnName)));
