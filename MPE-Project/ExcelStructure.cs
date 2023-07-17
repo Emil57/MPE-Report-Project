@@ -138,5 +138,52 @@ public class ExcelStructure
         }
     }
 
+    public static DataTable LoadExcelFileWithDateTestedAsDateFormat(string filePath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
+        {
+            ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
+            DataTable dataTable = new DataTable();
+
+            // Load headers
+            int totalColumns = worksheet.Dimension.Columns;
+            for (int col = 1; col <= totalColumns; col++)
+            {
+                
+                string? headerText = worksheet.Cells[1, col].Value?.ToString();
+                //-------------------------- Under test --------------
+                if(headerText.Equals("Date Tested"))
+                {
+                    dataTable.Columns.Add(headerText,typeof(DateTime));
+                    dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;
+                }
+                //-------------------------- ends here --------------
+                dataTable.Columns.Add(headerText);
+            }
+
+            // Load data rows
+            int totalRows = worksheet.Dimension.Rows;
+            for (int row = 2; row <= totalRows; row++)
+            {
+                DataRow dataRow = dataTable.NewRow();
+                for (int col = 1; col <= totalColumns; col++)
+                {
+
+                    dataRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
+                    //-------------------------- Under test --------------
+
+                    if (col-1 == dataTable.Columns.IndexOf("Date Tested"))
+                    {
+                        dataRow[col - 1] = (DateTime)worksheet.Cells[row, col].Value;
+                    }
+                    //-------------------------- ends here --------------
+                }
+                dataTable.Rows.Add(dataRow);
+            }
+
+            return dataTable;
+        }
+    }
 
 }

@@ -53,6 +53,14 @@
               "target": "Package",
               "version": "[6.2.4, )"
             },
+            "MSTest.TestFramework": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.13.3, )"
+            },
             "OpenQA.Selenium.Chrome.ChromeDriverExtensions": {
               "target": "Package",
               "version": "[1.2.0, )"

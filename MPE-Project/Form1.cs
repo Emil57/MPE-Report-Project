@@ -18,6 +18,7 @@ namespace MPE_Project
 {
     public partial class Form1 : Form
     {
+
         private readonly Dictionary<string, string> FilesPathList = new(); // list of path files involved in the project
         DataTable PowerBIDataTable = new();
         DataTable MpeDataTable = new();
@@ -29,9 +30,11 @@ namespace MPE_Project
         readonly List<DataTable> OffshoreDataTable = new();
         IEnumerable<DataColumn> MpeListOfBins = new List<DataColumn>();  //variable to support on mpe process
         DataRow[] PowerBIFilteredRowsByPnAndWeek = new DataRow[1];             //variable to support on mpe process
+
         public Form1()
         {
             InitializeComponent();
+            label9.Text = "Version " + Application.ProductVersion;
         }
         private void Form1_Load(object sender, EventArgs e)
         {
