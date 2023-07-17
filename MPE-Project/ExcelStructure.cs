@@ -38,7 +38,7 @@ public class ExcelStructure
             return dataTable;
         }
     }
-    public static List<DataTable> LoadOfshoreFile(string filePath, string[] targetSheetNames)
+    public static List<DataTable> LoadOffshoreFile(string filePath, string[] targetSheetNames)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 

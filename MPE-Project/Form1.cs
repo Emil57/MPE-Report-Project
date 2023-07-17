@@ -21,7 +21,7 @@ namespace MPE_Project
         private readonly Dictionary<string, string> FilesPathList = new(); // list of path files involved in the project
         DataTable PowerBIDataTable = new();
         DataTable MpeDataTable = new();
-        readonly String[] ListOfColumnsToDelete = new String[]
+        readonly String[] ColumnsToDeleteInPowerBiFile = new String[]
         {
             "CPN", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield", "Equipment", "SummaryUsed"
         };
@@ -133,7 +133,9 @@ namespace MPE_Project
             ExportCsvFile(PowerBIFilteredRowsByPnAndWeek, path);
             MessageBox.Show("MPE Report Succesfully Done!" + "\n" + "New path: " + path, "Results", MessageBoxButtons.OK);
         }
-
+        /// <summary>
+        /// This method is used to load mpe format base to a data table an extract important features to add in the new report
+        /// </summary>
         private void MpeProcess()
         {
             //Step 1: Load MPE file 
@@ -194,7 +196,7 @@ namespace MPE_Project
 
             //Step 3: Remove columns that we don't need for the report
             //These columns of PowerBI file are either empty or not necessary
-            foreach (string columnName in ListOfColumnsToDelete)
+            foreach (string columnName in ColumnsToDeleteInPowerBiFile)
             {
                 try
                 {
