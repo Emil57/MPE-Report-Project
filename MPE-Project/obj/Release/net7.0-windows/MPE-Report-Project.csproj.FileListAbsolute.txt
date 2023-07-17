@@ -32,6 +32,7 @@ C:\Users\trejode\source\repos\MPE-Project\MPE-Project\obj\Release\net7.0-windows
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\obj\Release\net7.0-windows\MPE-Report-Project.pdb
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\obj\Release\net7.0-windows\MPE-Report-Project.genruntimeconfig.cache
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\obj\Release\net7.0-windows\ref\MPE-Report-Project.dll
+C:\Users\trejode\source\repos\MPE-Project\MPE-Project\obj\Release\net7.0-windows\MPE_Project.Properties.Resources.resources
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\bin\Release\net7.0-windows\MPE-Report-Project.dll.manifest
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\bin\Release\net7.0-windows\MPE-Report-Project.application
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\obj\Release\net7.0-windows\MPE-Report-Project.dll.manifest

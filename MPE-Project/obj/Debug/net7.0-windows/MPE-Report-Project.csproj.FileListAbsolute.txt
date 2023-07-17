@@ -32,3 +32,4 @@ C:\Users\trejode\source\repos\MPE-Project\MPE-Project\bin\Debug\net7.0-windows\M
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\bin\Debug\net7.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\bin\Debug\net7.0-windows\Microsoft.Extensions.Primitives.dll
 C:\Users\trejode\source\repos\MPE-Project\MPE-Project\bin\Debug\net7.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\trejode\source\repos\MPE-Project\MPE-Project\obj\Debug\net7.0-windows\MPE_Project.Properties.Resources.resources
