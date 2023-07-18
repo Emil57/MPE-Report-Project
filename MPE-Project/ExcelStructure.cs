@@ -10,33 +10,31 @@ public class ExcelStructure
     public static DataTable LoadExcelFile(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
-        {
-            ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
-            DataTable dataTable = new DataTable();
+        using ExcelPackage package = new ExcelPackage(new FileInfo(filePath));
+        ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
+        DataTable dataTable = new();
 
-            // Load headers
-            int totalColumns = worksheet.Dimension.Columns;
+        // Load headers
+        int totalColumns = worksheet.Dimension.Columns;
+        for (int col = 1; col <= totalColumns; col++)
+        {
+            string? headerText = worksheet.Cells[1, col].Value?.ToString();
+            dataTable.Columns.Add(headerText);
+        }
+
+        // Load data rows
+        int totalRows = worksheet.Dimension.Rows;
+        for (int row = 2; row <= totalRows; row++)
+        {
+            DataRow dataRow = dataTable.NewRow();
             for (int col = 1; col <= totalColumns; col++)
             {
-                string? headerText = worksheet.Cells[1, col].Value?.ToString();               
-                dataTable.Columns.Add(headerText);
+                dataRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
             }
-
-            // Load data rows
-            int totalRows = worksheet.Dimension.Rows;
-            for (int row = 2; row <= totalRows; row++)
-            {
-                DataRow dataRow = dataTable.NewRow();
-                for (int col = 1; col <= totalColumns; col++)
-                {
-                    dataRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
-                }
-                dataTable.Rows.Add(dataRow);
-            }
-
-            return dataTable;
+            dataTable.Rows.Add(dataRow);
         }
+
+        return dataTable;
     }
     public static List<DataTable> LoadOffshoreFile(string filePath, string[] targetSheetNames)
     {
@@ -141,49 +139,59 @@ public class ExcelStructure
     public static DataTable LoadExcelFileWithDateTestedAsDateFormat(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using (ExcelPackage package = new ExcelPackage(new FileInfo(filePath)))
-        {
-            ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
-            DataTable dataTable = new DataTable();
+        using ExcelPackage package = new(new FileInfo(filePath));
+        ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
+        DataTable dataTable = new DataTable();
 
-            // Load headers
-            int totalColumns = worksheet.Dimension.Columns;
-            for (int col = 1; col <= totalColumns; col++)
+        // Load headers
+        int totalColumns = worksheet.Dimension.Columns;
+        for (int col = 1; col <= totalColumns; col++)
+        {
+
+            string? headerText = worksheet.Cells[1, col].Value?.ToString();
+            //-------------------------- Under test --------------
+            if (headerText.Equals("Date Tested"))
             {
-                
-                string? headerText = worksheet.Cells[1, col].Value?.ToString();
-                //-------------------------- Under test --------------
-                if(headerText.Equals("Date Tested"))
-                {
-                    dataTable.Columns.Add(headerText,typeof(DateTime));
-                    dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;
-                }
-                //-------------------------- ends here --------------
+                dataTable.Columns.Add(headerText, typeof(DateTime));
+                dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;
+            }
+            //-------------------------- ends here --------------
+            else
+            {
                 dataTable.Columns.Add(headerText);
             }
-
-            // Load data rows
-            int totalRows = worksheet.Dimension.Rows;
-            for (int row = 2; row <= totalRows; row++)
-            {
-                DataRow dataRow = dataTable.NewRow();
-                for (int col = 1; col <= totalColumns; col++)
-                {
-
-                    dataRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
-                    //-------------------------- Under test --------------
-
-                    if (col-1 == dataTable.Columns.IndexOf("Date Tested"))
-                    {
-                        dataRow[col - 1] = (DateTime)worksheet.Cells[row, col].Value;
-                    }
-                    //-------------------------- ends here --------------
-                }
-                dataTable.Rows.Add(dataRow);
-            }
-
-            return dataTable;
         }
-    }
 
+        // Load data rows
+        int totalRows = worksheet.Dimension.Rows;
+        for (int row = 2; row <= totalRows; row++)
+        {
+            DataRow dataRow = dataTable.NewRow();
+            for (int col = 1; col <= totalColumns; col++)
+            {
+
+                //-------------------------- Under test --------------
+                var cell = worksheet.Cells[row, col].Value?.ToString();
+                if (col - 1 == dataTable.Columns.IndexOf("Date Tested"))
+                {
+                    try
+                    {
+                        dataRow[col - 1] = Convert.ToDateTime(cell).ToShortDateString();
+                        dataRow[col - 1] = Convert.ToDateTime(cell).Date;
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        Debug.WriteLine(ex.Message + "\nNo se puede convertir");
+                    }
+                }
+                else
+                {
+                    dataRow[col - 1] = cell;
+                }
+                //-------------------------- ends here --------------
+            }
+            dataTable.Rows.Add(dataRow);
+        }
+        return dataTable;
+    }
 }

@@ -10,6 +10,7 @@ using System.Numerics;
 using OfficeOpenXml;
 using System.Drawing;
 using System.CodeDom;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 ///<summary>
 ///This is the main project create MPE reports base on current format used
@@ -18,7 +19,6 @@ namespace MPE_Project
 {
     public partial class Form1 : Form
     {
-
         private readonly Dictionary<string, string> FilesPathList = new(); // list of path files involved in the project
         DataTable PowerBIDataTable = new();
         DataTable MpeDataTable = new();
@@ -126,8 +126,11 @@ namespace MPE_Project
             //Delete duplicates from PowerBI File 
             //No longer needed
             //RemoveDuplicates();
-
+            //
             RenameColumnsOfPowerBI();
+
+            //Sort descending PowerBI file by 'date tested' column 
+            SortDescendingByDateTestedColumn();
 
             //Export MPE file
             //Get week number 
@@ -182,14 +185,15 @@ namespace MPE_Project
 
             // Step 1: Load PowerBI file
             //This file contains all lots data for GMAV part numbers
-            PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
-            //PowerBIDataTable.Columns["Date Tested"].Expression = "CONVERT('Date Tested', 'System.DateTime')";
+            //PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
+            PowerBIDataTable = LoadExcelFileWithDateTestedAsDateFormat(FilesPathList["PowerBI FilePath"]);
 
             //PrintDataTable(dataTable);
 
             //Step 2: Filter PowerBI file rows by PN and week
             string filter = "[MPN] LIKE '%" + comboBox1.Text + "%' AND [Date Code] LIKE '%" + comboBox2.Text + "%'";
             PowerBIFilteredRowsByPnAndWeek = PowerBIDataTable.Select(filter);
+
             /* Just for view/debug
             foreach(DataRow row in PowerBIFilteredRows)
             {
@@ -325,19 +329,21 @@ namespace MPE_Project
                 BinHeaderColumns.ElementAt(BinStart).ColumnName = bin;
                 BinNumber++;
             }
+
             // Once we have renamed columns according to the report, we need to create and add new columns with the remaining bins (goes from bin 2 to bin 20)
             for (int i = PowerBIDataTable.Columns.Count; i < 92; i += 4)
             {
                 string header = "BinX" + BinNumber + "_Number";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(PowerBIDataTable.Columns.Count - 1);
                 header = "BinX" + BinNumber + "_Name";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(PowerBIDataTable.Columns.Count - 1);
                 header = "BinX" + BinNumber + "_%";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(PowerBIDataTable.Columns.Count - 1);
                 header = "BinX" + BinNumber + "_SBL";
-                PowerBIDataTable.Columns.Add(header).SetOrdinal(i - 1);
+                PowerBIDataTable.Columns.Add(header).SetOrdinal(PowerBIDataTable.Columns.Count - 1);
                 BinNumber++;
             }
+            PowerBIDataTable.Columns["Comment"].SetOrdinal(PowerBIDataTable.Columns.Count - 1);
 
             //Step 2: Round values for yield % column and _% and _SBL columns to 2 decimals
             var firstRowPowerBI = PowerBIFilteredRowsByPnAndWeek[0];
@@ -391,6 +397,17 @@ namespace MPE_Project
                 }
             }
             return weekNumber;
+        }
+        private void SortDescendingByDateTestedColumn()
+        {
+            List<DataRow> PowerBiReadyToExport = PowerBIFilteredRowsByPnAndWeek.OrderBy(row => (DateTime)row["Date Tested"]).ToList();
+            PowerBiReadyToExport.Sort((row1, row2) =>
+            {
+                DateTime date1 = (DateTime)row1["Date Tested"];
+                DateTime date2 = (DateTime)row2["Date Tested"];
+                return DateTime.Compare(date2, date1);
+            });
+            PowerBiReadyToExport.CopyTo(PowerBIFilteredRowsByPnAndWeek, 0);
         }
         private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
