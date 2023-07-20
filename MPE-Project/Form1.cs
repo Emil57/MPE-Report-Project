@@ -27,7 +27,6 @@ namespace MPE_Project
             "CPN", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield", "Equipment", "SummaryUsed"
         };
         object xcode = " ", apn = "";
-        readonly List<DataTable> OffshoreDataTable = new();
         IEnumerable<DataColumn> MpeListOfBins = new List<DataColumn>();  //variable to support on mpe process
         DataRow[] PowerBIFilteredRowsByPnAndWeek = new DataRow[1];             //variable to support on mpe process
 
@@ -40,6 +39,11 @@ namespace MPE_Project
         {
 
         }
+        /// <summary>
+        /// Method to call either the generating process or validation process
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button1_Click(object sender, EventArgs e)
         {
             //Call web sites
@@ -52,8 +56,8 @@ namespace MPE_Project
                 Debug.WriteLine("Create");
                 CreateReport();
 
-                //string[] targets = { comboBox1.Text, comboBox1.Text + "A", comboBox1.Text + "B" };
-                //OffshoreDataTable = LoadOfshoreFile(FilesPathList["Offshore FilePath"], targets);
+                
+                OffshoreReport();
             }
             else
             {
@@ -62,6 +66,11 @@ namespace MPE_Project
             }
             //-----------------------------------------------------------------------------------------------------------------//
         }
+        /// <summary>
+        /// Method to call the select files
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button7_Click(object sender, EventArgs e)
         {
             //MPE File
@@ -75,7 +84,7 @@ namespace MPE_Project
         private void Button2_Click(object sender, EventArgs e)
         {
             //Ofshore file 
-            SelectFiles("Select Ofshore File", "Excel File|*.xlsx*", "Ofshore FilePath");
+            SelectFiles("Select Ofshore File", "Excel File|*.xlsx*", "Offshore FilePath");
         }
         public void SelectFiles(string title, string filter, string fileType)
         {
@@ -185,8 +194,8 @@ namespace MPE_Project
 
             // Step 1: Load PowerBI file
             //This file contains all lots data for GMAV part numbers
-            //PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
-            PowerBIDataTable = LoadExcelFileWithDateTestedAsDateFormat(FilesPathList["PowerBI FilePath"]);
+            PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
+            //PowerBIDataTable = LoadExcelFileWithDateTestedAsDateFormat(FilesPathList["PowerBI FilePath"]);
 
             //PrintDataTable(dataTable);
 
@@ -409,6 +418,19 @@ namespace MPE_Project
             });
             PowerBiReadyToExport.CopyTo(PowerBIFilteredRowsByPnAndWeek, 0);
         }
+
+        private void OffshoreReport()
+        {
+            //Get the datatables of each worksheets
+            string[] targets = { comboBox1.Text, comboBox1.Text + "A", comboBox1.Text + "B" };
+            List<DataTable> OffshoreDataTablesList = LoadOffshoreFile(FilesPathList["Offshore FilePath"], targets);
+            DataTable OffshoreDataTableAsMpe = MpeDataTable.Clone(); //copy header names
+
+            foreach (DataTable datatable in OffshoreDataTablesList)
+            {
+
+            }
+        }
         private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
             //When Validate button is checked
@@ -421,12 +443,22 @@ namespace MPE_Project
             label5.Enabled = !radioButton2.Checked;
             comboBox1.Enabled = !radioButton2.Checked;
             comboBox2.Enabled = !radioButton2.Checked;
-            comboBox3.Enabled = !radioButton2.Checked;
             label2.Enabled = !radioButton2.Checked;
             textBox1.Enabled = !radioButton2.Checked;
             button2.Enabled = !radioButton2.Checked;
-
+        }
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            label6.Enabled = checkBox2.Checked;
+            textBox2.Enabled = checkBox2.Checked;
+            button5.Enabled = checkBox2.Checked;
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            label2.Enabled = checkBox1.Checked;
+            textBox1.Enabled = checkBox1.Checked;
+            button2.Enabled = checkBox1.Checked;
+        }
     }
 }

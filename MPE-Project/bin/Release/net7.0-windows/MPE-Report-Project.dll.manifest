@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="MPE-Report-Project.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="MPE-Report-Project.exe" version="1.0.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="mushroom.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -54,6 +54,15 @@
       </hash>
     </dependentAssembly>
   </dependency>
+  <file name="cs\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22408">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>Bo2W2rCJcrOKpqK1aGmcn30Vdf6yVZh+K4zKepRmTNg=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="CsvHelper.dll" size="211456">
     <hash>
       <dsig:Transforms>
@@ -61,6 +70,15 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>oh395MqwHOdv87ggl0L2cpWEDZZGFYe3CVUXnzSo8rY=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="de\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22936">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>for1KX/OJnsw8PdSBR7o1ZEpIOuw96uN4mAlBekwp+w=</dsig:DigestValue>
     </hash>
   </file>
   <file name="EPPlus.dll" size="3238400">
@@ -88,6 +106,51 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>t6TzvTi4OFWdinm31CPX3ZSpbZHCwLTjlhcZrAcIWI8=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="es\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22960">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>Pg2pFHdjumT6zbxLvWBkmyq5mw42PKIXdHkP78atjQ8=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="fr\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22960">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>MjzXfdQrH9vQPQPzR6TySna1a45BsB7lC81cQ2+aPaY=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="it\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22920">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ZGDBa3PYZ54lgnFRplzEQTXQTIOeWkNilRlOVe5q1NM=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="ja\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="23984">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>TXdA4P5YWdg7gsYZVYToeopaQ6s7zgbZIrpM266fgrI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="ko\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="23448">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>HtWFp49un/g0d1cte/2TmaDUPXJQyro7XTg1iNVdI7A=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Microsoft.Extensions.Configuration.Abstractions.dll" size="28288">
@@ -171,22 +234,40 @@
       <dsig:DigestValue>19Ii6Xiwrdp8FZS7LuR3eE7WWa0UVi9q3UUL0/ojd+E=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="MPE-Report-Project.deps.json" size="76952">
+  <file name="Microsoft.VisualStudio.TestPlatform.TestFramework.dll" size="94616">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>NjJ437A4St9Tltlb9H7xcoe7NPxMadPnABheYoKcaiE=</dsig:DigestValue>
+      <dsig:DigestValue>y8HkxBIDDaqkJVPLMDhtGf/XXIhQjhRhS6A8wSoxda4=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="MPE-Report-Project.dll" size="232960">
+  <file name="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll" size="29104">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>tM7TTSHJjumMH82698gwSeezDALtwBCCfPZg+bGXLyE=</dsig:DigestValue>
+      <dsig:DigestValue>xTPsjB/Wmv7yX/LSXo7OZnZ3ccUYiT9IUiH4EVIUAeM=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="MPE-Report-Project.deps.json" size="46840">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ndzFhkmKEMFa1mvqwPagzkdtWD0coQrpegER+Y6ysJw=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="MPE-Report-Project.dll" size="236032">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>oZjAcQXW35vo3dq4U1GcN3EhdEz1OfdbiCL5QluAgQc=</dsig:DigestValue>
     </hash>
   </file>
   <file name="MPE-Report-Project.exe" size="222720">
@@ -225,6 +306,15 @@
       <dsig:DigestValue>AmjYhRYDXrZ4UeFf6lvSeHEA5V9O1qnItDSf6TPDkyk=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="nunit.framework.dll" size="486912">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ggnd6Ciy/Wu4mv/3YJFiCPuMDD2RcyZ2wyE+RslKreA=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="OpenQA.Selenium.Chrome.ChromeDriverExtensions.dll" size="9728">
     <hash>
       <dsig:Transforms>
@@ -234,6 +324,42 @@
       <dsig:DigestValue>6yldLt+JsEiZLClzMKUAybvTJsk9Jb4xZmsaVa9MMZQ=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="pl\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22960">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>NuDb2fNhLDwzjzRpsTUhwICzkWUCu5BJ4cu2M7R2RBE=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="pt-BR\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22976">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>R3aRwVfkTDQUghd4d9vq2/cXp+IuSw7KGXTeshhn0U8=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="ru\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="25520">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>lE9ITf2uKXOZFFqphNKRkxwF8zekhuKctOteEr+4o7U=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="tr\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="22408">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>C+BHUV7QBLHY7VAT7kxCupvruqjYa2EkZGiGsJOkldQ=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="WebDriver.dll" size="1078784">
     <hash>
       <dsig:Transforms>
@@ -241,6 +367,24 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>lWFI0Kzds/0QqsmuOr26m9Y29Q4rrFwkPzT6owcNWKQ=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="zh-Hans\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="21952">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>oaLVJS3YIWl8k9Qaw5TmrNSsZdXeuCNXGhC04cE/YKQ=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="zh-Hant\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" size="21912">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>H5rWIkJRaPUeYloEsiXSidJ4NQpxM5hT4eVQO1yjgXc=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

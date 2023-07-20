@@ -35,7 +35,7 @@ public class TestsMethods
         dataRow["Qty In"] = "11470";
 
         string file = "\\mexhome03\\Data\\Test Engineering\\Public\\Product Engineering\07_PDSE Files\\Dimas Emiliano\\MPE Reports\\Pruebas MPE\test metodos\tablaExpected.xlsx";
-        dataTable = LoadExcelFileWithDateTestedAsDateFormat(file);
+        dataTable = LoadExcelFile(file);
         
         //Assert 
         bool equal = dataTable == dataTableExpected;

@@ -1,12 +1,17 @@
-﻿using OfficeOpenXml;
+﻿using NUnit.Framework;
+using OfficeOpenXml;
 using System;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 
+/// <summary>
+/// This is the class to contains the methods to load and export excel files using epplus library
+/// </summary>
 public class ExcelStructure
 {
+    /*
     public static DataTable LoadExcelFile(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -33,9 +38,15 @@ public class ExcelStructure
             }
             dataTable.Rows.Add(dataRow);
         }
-
         return dataTable;
     }
+    */
+    /// <summary>
+    /// Method to load the offshore reports to a list of datatables
+    /// </summary>
+    /// <param name="filePath">Path to load the excel report</param>
+    /// <param name="targetSheetNames">array of part numbers to target in the sheetnames of the report</param>
+    /// <returns></returns>
     public static List<DataTable> LoadOffshoreFile(string filePath, string[] targetSheetNames)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -44,7 +55,6 @@ public class ExcelStructure
         using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(filePath)))
         {
             ExcelWorkbook workbook = excelPackage.Workbook;
-            int headerRow = 1; // Set the header row number width. This is based on the current GIGA report format of headers
 
             foreach (string sheetName in targetSheetNames)
             {
@@ -53,73 +63,44 @@ public class ExcelStructure
                 if (worksheet != null)
                 {
                     DataTable dataTable = new DataTable(sheetName);
-                    //Merged cells
-                    var mergedCells = worksheet.MergedCells;
-                    
-                    foreach(var mergedCell in mergedCells)
-                    {
-                        var mergedRange = new ExcelAddressBase(mergedCell);
 
-                        //Check if the merged range overlaps with the header row
-                        if(mergedRange.Start.Row <= headerRow && mergedRange.End.Row >= headerRow)
+                    int totalColumns = worksheet.Dimension.Columns-1;
+                    int totalRows = worksheet.Dimension.Rows;
+                    for (int col = 1; col < totalColumns; col++)
+                    {
+                        string? headerText = worksheet.Cells[1, col].Value?.ToString();
+                        dataTable.Columns.Add(headerText);
+                        if (headerText.Contains("BIN"))
                         {
-                            // Get the value from the start cells of the merged range
-                            var headerText = worksheet.Cells[mergedRange.Start.Row, mergedRange.Start.Column].Value.ToString();
-                            dataTable.Columns.Add(headerText);
+                            for (int i = 2; i <=3; i++)
+                            {
+                                dataTable.Columns.Add(headerText + i.ToString());
+                            }
+                            col += 2;
                         }
                     }
+                    //PrintDataTable(dataTable);
 
-                    DataRow dataRow = dataTable.Rows.Add();
-                    PrintDataTable(dataTable);
-
-
-                    int totalRows = worksheet.Dimension.Rows;
-                    int totalColumns = worksheet.Dimension.Columns;
-                    /*
                     // Read the data from the worksheet and populate the DataTable
-                    for (int row = 1; row <= totalRows; row++)
+                    for (int row = 2; row <= totalRows; row++)
                     {
-                        DataRow dataRow = dataTable.Rows.Add();
-
-                        for (int col = 1; col <= totalColumns; col++)
+                        DataRow dataRow = dataTable.NewRow();
+                        for (int col = 1; col < totalColumns; col++)
                         {
-                            if (row == 1)
-                            {
-                                // Set column names in the first row
-                                try
-                                {
-                                    dataTable.Columns.Add(worksheet.Cells[1, col].Value.ToString());
-                                }
-                                catch (NullReferenceException ex)
-                                {
-                                    Debug.WriteLine(ex.Message);
-                                }
-                            }
-                            else
-                            {
-                                // Add data to subsequent rows
-                                try
-                                {
-                                    dataRow[col - 1] = worksheet.Cells[row, col].Value;
-                                }
-                                catch (IndexOutOfRangeException ex)
-                                {
-                                    Debug.WriteLine(ex.Message);
-                                }
-                            }
-                            }
+                            dataRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
+                        }
+                        dataTable.Rows.Add(dataRow);
                     }
-                    */
-
-
-
                     dataTables.Add(dataTable);
                 }
             }
         }
-
         return dataTables;
     }
+    /// <summary>
+    /// method to print data tables
+    /// </summary>
+    /// <param name="dataTable">datatable to print</param>
     public static void PrintDataTable(DataTable dataTable)
     {
         foreach (DataColumn column in dataTable.Columns)
@@ -136,7 +117,12 @@ public class ExcelStructure
         }
     }
 
-    public static DataTable LoadExcelFileWithDateTestedAsDateFormat(string filePath)
+    /// <summary>
+    /// Load excel file to a datatable
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns>datatable with the values of the excel file</returns>
+    public static DataTable LoadExcelFile(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage package = new(new FileInfo(filePath));
@@ -147,7 +133,6 @@ public class ExcelStructure
         int totalColumns = worksheet.Dimension.Columns;
         for (int col = 1; col <= totalColumns; col++)
         {
-
             string? headerText = worksheet.Cells[1, col].Value?.ToString();
             //-------------------------- Under test --------------
             if (headerText.Equals("Date Tested"))
@@ -169,9 +154,8 @@ public class ExcelStructure
             DataRow dataRow = dataTable.NewRow();
             for (int col = 1; col <= totalColumns; col++)
             {
-
-                //-------------------------- Under test --------------
                 var cell = worksheet.Cells[row, col].Value?.ToString();
+                //-------------------------- Under test --------------
                 if (col - 1 == dataTable.Columns.IndexOf("Date Tested"))
                 {
                     try
@@ -184,11 +168,11 @@ public class ExcelStructure
                         Debug.WriteLine(ex.Message + "\nNo se puede convertir");
                     }
                 }
+                //-------------------------- ends here --------------
                 else
                 {
                     dataRow[col - 1] = cell;
                 }
-                //-------------------------- ends here --------------
             }
             dataTable.Rows.Add(dataRow);
         }
