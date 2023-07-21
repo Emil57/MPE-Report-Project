@@ -54,7 +54,7 @@ namespace MPE_Project
             {
                 //Create MPE
                 Debug.WriteLine("Create");
-                CreateReport();
+                //CreateReport();
 
                 
                 OffshoreReport();
@@ -251,7 +251,7 @@ namespace MPE_Project
             var MpeBinNumberValues = MpeListOfBins
                 .Select(column => MpeDataTable.Rows[0][column])
                 .Where(column => !string.IsNullOrEmpty(column.ToString())); //Get bin_number and bin_name columns with data from mpe file 
-                                                                            //var alo = MpeBinNumberValues.Where(column => !string.IsNullOrEmpty(column.ToString()));
+            //var alo = MpeBinNumberValues.Where(column => !string.IsNullOrEmpty(column.ToString()));
 
             //Get the columns to keep in a list. This for PowerBI File
             string Bnumber = "", Bname = "", Bporcentage = "", Btrigger = "";
@@ -422,13 +422,91 @@ namespace MPE_Project
         private void OffshoreReport()
         {
             //Get the datatables of each worksheets
-            string[] targets = { comboBox1.Text, comboBox1.Text + "A", comboBox1.Text + "B" };
-            List<DataTable> OffshoreDataTablesList = LoadOffshoreFile(FilesPathList["Offshore FilePath"], targets);
-            DataTable OffshoreDataTableAsMpe = MpeDataTable.Clone(); //copy header names
+            string[] sheetNameTargets = { comboBox1.Text, comboBox1.Text + "A", comboBox1.Text + "B" };
+            MpeDataTable = LoadCsvFile(FilesPathList["MPE FilePath"]);
+            List<DataTable> ListOfDataTables = LoadOffshoreFile(FilesPathList["Offshore FilePath"], sheetNameTargets);
 
-            foreach (DataTable datatable in OffshoreDataTablesList)
+            DataTable NewMpeReport = MpeDataTable.Clone(); //copy header names
+            string[] offshoreColumnNames =
             {
+                "TESTDATE", "PRODUCT", "SWKS LOTNO", "GS LOTNO", "TestProgram", "INPUT QTY", "PASS QTY", "YIELD"
+            };
 
+            foreach (DataTable OffshoreDataTableCurrent in ListOfDataTables)
+            {
+                //Move data from each offshore datatable to mpe report
+                foreach(DataRow dataRowOffshoreToIterate in OffshoreDataTableCurrent.Rows)
+                {
+                    if(dataRowOffshoreToIterate.Table.Rows.IndexOf(dataRowOffshoreToIterate) != 0)
+                    {
+                        DataRow dataRowNewMpe = NewMpeReport.NewRow();
+
+                        //Different data in rows
+                        dataRowNewMpe["Date Tested"] = dataRowOffshoreToIterate[offshoreColumnNames[0]];
+                        dataRowNewMpe["Lot Code"] = dataRowOffshoreToIterate[offshoreColumnNames[2]].ToString();
+                        dataRowNewMpe["Test Program Name"] = dataRowOffshoreToIterate[offshoreColumnNames[4]].ToString();
+                        dataRowNewMpe["Lot Qty"] = dataRowOffshoreToIterate[offshoreColumnNames[5]].ToString();
+
+                        double yield = Math.Round(Convert.ToDouble(dataRowOffshoreToIterate[offshoreColumnNames[7]].ToString())*100,2);
+                        dataRowNewMpe["Yield %"] = yield.ToString();
+
+                        //Fill in the non-bin empty columns the information that is duplicated
+                        dataRowNewMpe["Supplier Name"] = "Skyworks Solutions";
+                        dataRowNewMpe["Component Type"] = "ASIC";
+                        dataRowNewMpe["APN"] = MpeDataTable.Rows[0]["APN"];
+                        dataRowNewMpe["Program Name"] = MpeDataTable.Rows[0]["Program Name"];
+                        dataRowNewMpe["Test Step"] = MpeDataTable.Rows[0]["Test Step"];
+                        dataRowNewMpe["Manufacturing Flow"] = MpeDataTable.Rows[0]["Manufacturing Flow"];
+                        dataRowNewMpe["SYL"] = MpeDataTable.Rows[0]["SYL"];
+
+                        //get data from bins
+                        var MpeListOfBinNumbers = MpeDataTable.Columns
+                            .Cast<DataColumn>()
+                            .Where(column => column.ColumnName.EndsWith("_Number") && !string.IsNullOrEmpty(MpeDataTable.Rows[0][column].ToString()));  //Header names where there is a gmav for Bin_Number (no empty nor null values)
+
+                        var OffshoreBinColumns = NewMpeReport.Columns
+                            .Cast<DataColumn>()
+                            .Where(column => column.ColumnName.Contains("BIN") && column.ColumnName.EndsWith("3") && !string.IsNullOrEmpty(MpeDataTable.Rows[0][column].ToString()));  //Header names where there is a gmav for Bin_Number (no empty nor null values)
+                       
+                        foreach(DataColumn MpeBinNumberValue in MpeListOfBinNumbers)
+                        {
+                            string BinNumber = "BIN" + MpeDataTable.Rows[0][MpeBinNumberValue.ColumnName];
+                            var offshoreColumnNumber = OffshoreDataTableCurrent.Columns
+                                .Cast<DataColumn>()
+                                .Where(column => column.ColumnName.StartsWith(BinNumber)); //get the columns with the bin number
+                            
+                            string filter = "[SWKS LOTNO] LIKE '%" + dataRowNewMpe["Lot Code"] + "%'"; //filter on offshore datatable
+                            DataRow dataRowToGetDataFromOffshore = OffshoreDataTableCurrent.Select(filter).Single<DataRow>(); //get datarow of offshore datatable by lot
+
+                            short indexOfstring = (short) MpeBinNumberValue.ColumnName.IndexOf("_");
+                            string substringBinX = MpeBinNumberValue.ColumnName.Substring(0, indexOfstring+1);
+                            string concat; double doubleToConvert;
+
+                            foreach (DataColumn dataColumn in offshoreColumnNumber)
+                            {
+                                if (dataColumn.ColumnName.EndsWith("]"))
+                                {
+                                    concat = substringBinX + "SBL";
+                                    doubleToConvert = Math.Round(Convert.ToDouble(dataRowToGetDataFromOffshore[dataColumn.ColumnName].ToString()) * 100, 2);
+                                    dataRowNewMpe[concat] = doubleToConvert.ToString();
+                                }
+                                else if (dataColumn.ColumnName.EndsWith("3"))
+                                {
+                                    concat = substringBinX + "%";
+                                    doubleToConvert = Math.Round(Convert.ToDouble(dataRowToGetDataFromOffshore[dataColumn.ColumnName].ToString()) * 100, 2);
+                                    dataRowNewMpe[concat] = doubleToConvert.ToString();
+                                }
+                            }
+
+                            //add bin number
+                            dataRowNewMpe[MpeBinNumberValue.ColumnName] = MpeDataTable.Rows[0][MpeBinNumberValue.ColumnName].ToString();
+                            //add bin name
+                            concat = substringBinX + "Name";
+                            dataRowNewMpe[concat] = MpeDataTable.Rows[0][concat].ToString();
+                        }
+                        NewMpeReport.Rows.Add(dataRowNewMpe);
+                    }
+                }
             }
         }
         private void RadioButton2_CheckedChanged(object sender, EventArgs e)
@@ -453,7 +531,6 @@ namespace MPE_Project
             textBox2.Enabled = checkBox2.Checked;
             button5.Enabled = checkBox2.Checked;
         }
-
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             label2.Enabled = checkBox1.Checked;
