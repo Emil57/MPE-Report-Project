@@ -41,39 +41,40 @@ namespace MPE_Project
             //CallWebSite();
             //-------------------------------------------------Main code-------------------------------------------------------//
             //Check the action to perform
+            DataTable MpeDataTableReference = LoadCsvFile(FilesPathList["MPE FilePath"]);
             if (radioButton1.Checked)
             {
-                DataTable MpeDataTableReference = new();
+                DataTable DataReport = new DataTable();
                 //Create MPE
                 if (checkBox2.Checked && checkBox2.Checked)
                 {
                     //Mxli & Offshore
                     Debug.WriteLine("Creating MPE Report for Mxli and Offshore");
-                    DataTable MxliReport = MxliProcess(MpeDataTableReference);
+                    DataReport = MxliProcess(MpeDataTableReference);
                     DataTable OffshoreReport = OffshoreProcess(MpeDataTableReference);
-                    MxliReport.Merge(OffshoreReport);
-
-                    //Get week number 
-                    string weekNumber = GetWeekNumber();
-                    string path = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\", MpeDataTableReference.Rows[0]["Program Name"], "_", MpeDataTableReference.Rows[0]["MPN"], "_", MpeDataTableReference.Rows[0]["APN"], "_WW", weekNumber, "-mpe-raw.csv");
-
-                    //To export file
-                    ExportCsvFile(MxliReport, path);
-
-                    MessageBox.Show("MPE Report Succesfully Done!" + "\n" + "New path: " + path, "Results", MessageBoxButtons.OK);
+                    DataReport.Merge(OffshoreReport);
                 }
                 else if(checkBox2.Checked) 
                 {
                     //Mxli
                     Debug.WriteLine("Creating MPE Report for Mxli");
-                    DataTable MxliReport = MxliProcess(MpeDataTableReference);
+                    DataReport = MxliProcess(MpeDataTableReference);
                 }
                 else if(checkBox1.Checked)
                 {
                     //Offshore
                     Debug.WriteLine("Creating MPE Report for Offshore");
-                    DataTable OffshoreReport = OffshoreProcess(MpeDataTableReference);
+                    DataReport = OffshoreProcess(MpeDataTableReference);
                 }
+
+                //Get week number 
+                string weekNumber = GetWeekNumber();
+                string path = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\", MpeDataTableReference.Rows[0]["Program Name"], "_", MpeDataTableReference.Rows[0]["MPN"], "_", MpeDataTableReference.Rows[0]["APN"], "_WW", weekNumber, "-mpe-raw.csv");
+
+                //To export file
+                ExportCsvFile(DataReport, path);
+
+                MessageBox.Show("MPE Report Succesfully Done!" + "\n" + "New path: " + path, "Results", MessageBoxButtons.OK);
             }
             else
             {
@@ -100,7 +101,7 @@ namespace MPE_Project
         private void Button2_Click(object sender, EventArgs e)
         {
             //Ofshore file 
-            SelectFiles("Select Ofshore File", "Excel File|*.xlsx*", "Offshore FilePath");
+            SelectFiles("Select Offshore File", "Excel File|*.xlsx*", "Offshore FilePath");
         }
         public void SelectFiles(string title, string filter, string fileType)
         {
@@ -163,7 +164,6 @@ namespace MPE_Project
         private IEnumerable<DataColumn> MpeProcess(DataTable MpeDataTableReference)
         {
             //Step 1: Load MPE file 
-            MpeDataTableReference = LoadCsvFile(FilesPathList["MPE FilePath"]);
             /*//Just for view/debug
             foreach (DataRow row in MpeDataTable.Rows)
             {
@@ -257,8 +257,9 @@ namespace MPE_Project
 
             foreach (string column in BinColumnsToDeleteInPowerBIFile)
             {
-                PowerBIDataTable.Columns.Remove(column);
+                PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Remove(column);
             }
+            PowerBIFilteredRowsByPnAndWeek[0].Table.AcceptChanges();
             return PowerBIFilteredRowsByPnAndWeek;
         }
         /// <summary>
