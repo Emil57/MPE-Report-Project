@@ -20,15 +20,6 @@ namespace MPE_Project
     public partial class Form1 : Form
     {
         private readonly Dictionary<string, string> FilesPathList = new(); // list of path files involved in the project
-        DataTable PowerBIDataTable = new();
-        DataTable MpeDataTable = new();
-        readonly String[] ColumnsToDeleteInPowerBiFile = new String[]
-        {
-            "CPN", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield", "Equipment", "SummaryUsed"
-        };
-        object xcode = " ", apn = "";
-        IEnumerable<DataColumn> MpeListOfBins = new List<DataColumn>();  //variable to support on mpe process
-        DataRow[] PowerBIFilteredRowsByPnAndWeek = new DataRow[1];             //variable to support on mpe process
 
         public Form1()
         {
@@ -52,12 +43,37 @@ namespace MPE_Project
             //Check the action to perform
             if (radioButton1.Checked)
             {
+                DataTable MpeDataTableReference = new();
                 //Create MPE
-                Debug.WriteLine("Create");
-                //CreateReport();
+                if (checkBox2.Checked && checkBox2.Checked)
+                {
+                    //Mxli & Offshore
+                    Debug.WriteLine("Creating MPE Report for Mxli and Offshore");
+                    DataTable MxliReport = MxliProcess(MpeDataTableReference);
+                    DataTable OffshoreReport = OffshoreProcess(MpeDataTableReference);
+                    MxliReport.Merge(OffshoreReport);
 
-                
-                OffshoreReport();
+                    //Get week number 
+                    string weekNumber = GetWeekNumber();
+                    string path = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\", MpeDataTableReference.Rows[0]["Program Name"], "_", MpeDataTableReference.Rows[0]["MPN"], "_", MpeDataTableReference.Rows[0]["APN"], "_WW", weekNumber, "-mpe-raw.csv");
+
+                    //To export file
+                    ExportCsvFile(MxliReport, path);
+
+                    MessageBox.Show("MPE Report Succesfully Done!" + "\n" + "New path: " + path, "Results", MessageBoxButtons.OK);
+                }
+                else if(checkBox2.Checked) 
+                {
+                    //Mxli
+                    Debug.WriteLine("Creating MPE Report for Mxli");
+                    DataTable MxliReport = MxliProcess(MpeDataTableReference);
+                }
+                else if(checkBox1.Checked)
+                {
+                    //Offshore
+                    Debug.WriteLine("Creating MPE Report for Offshore");
+                    DataTable OffshoreReport = OffshoreProcess(MpeDataTableReference);
+                }
             }
             else
             {
@@ -121,94 +137,63 @@ namespace MPE_Project
             }
         }
 
-        private void CreateReport()
+        private DataTable MxliProcess(DataTable MpeDataTableReference)
         {
             //MPE Process
-            MpeProcess();
+            var MpeListOfBins = MpeProcess(MpeDataTableReference);
 
             //PowerBI Process
-            PowerBIProcess();
-
-            //Merge Process 
-            SearchForGmavsInPowerBIFile();
-
-            //Delete duplicates from PowerBI File 
-            //No longer needed
+            DataTable PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
+            DataRow[] PowerBIFilteredRowsByPnAndWeek = PowerBIProcess(MpeDataTableReference);
+            //Search GMAVs in PowerBI
+            PowerBIFilteredRowsByPnAndWeek = SearchForGmavsInPowerBIFile(MpeDataTableReference, PowerBIDataTable, PowerBIFilteredRowsByPnAndWeek, MpeListOfBins);
+            //Delete duplicates from PowerBI File, deprecated, no longer needed
             //RemoveDuplicates();
-            //
-            RenameColumnsOfPowerBI();
-
+            PowerBIFilteredRowsByPnAndWeek = RenameColumnsOfPowerBI(PowerBIDataTable, PowerBIFilteredRowsByPnAndWeek);
             //Sort descending PowerBI file by 'date tested' column 
-            SortDescendingByDateTestedColumn();
+            PowerBIFilteredRowsByPnAndWeek = SortDescendingByDateTestedColumn(PowerBIFilteredRowsByPnAndWeek);
 
-            //Export MPE file
-            //Get week number 
-            string weekNumber = GetWeekNumber();
-            string path = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\", MpeDataTable.Rows[0]["Program Name"], "_", MpeDataTable.Rows[0]["MPN"], "_", MpeDataTable.Rows[0]["APN"], "_WW", weekNumber, "-mpe-raw.csv");
-            ExportCsvFile(PowerBIFilteredRowsByPnAndWeek, path);
-            MessageBox.Show("MPE Report Succesfully Done!" + "\n" + "New path: " + path, "Results", MessageBoxButtons.OK);
+            DataTable MxliReport = PowerBIFilteredRowsByPnAndWeek.CopyToDataTable<DataRow>();
+
+            return MxliReport; 
         }
         /// <summary>
         /// This method is used to load mpe format base to a data table an extract important features to add in the new report
         /// </summary>
-        private void MpeProcess()
+        private IEnumerable<DataColumn> MpeProcess(DataTable MpeDataTableReference)
         {
             //Step 1: Load MPE file 
-            MpeDataTable = LoadCsvFile(FilesPathList["MPE FilePath"]);
+            MpeDataTableReference = LoadCsvFile(FilesPathList["MPE FilePath"]);
             /*//Just for view/debug
             foreach (DataRow row in MpeDataTable.Rows)
             {
                 Debug.WriteLine(row["Lot Code"]);
-            }
-            //CSVTable(csv); */
+            }*/
 
             //Step 2: Extract GMAV bins
-            DataRow firstRow = MpeDataTable.Rows[0];
             // Filter the DataRow's columns to get "Bin" columns
-            MpeListOfBins = firstRow.Table.Columns
+            var MpeListOfBins = MpeDataTableReference.Rows[0].Table.Columns
                 .Cast<DataColumn>()
                 .Where(column => column.ColumnName.EndsWith("_Number"));
-            // Retrieve the values of the filtered columns
-            // Output the column values
-            /*
-            foreach (var value in MpeListOfBins)
-            {
-                Debug.WriteLine(value);
-            }
-            */
-
-            //Step 3: Get XCode and APN
-            try
-            {
-                xcode = MpeDataTable.Rows[0]["Program Name"];
-                apn = MpeDataTable.Rows[0]["APN"];
-            }
-            catch (NullReferenceException ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            return MpeListOfBins;
         }
-        private void PowerBIProcess()
+        /// <summary>
+        /// Process PowerBi File method
+        /// </summary>
+        private DataRow[] PowerBIProcess(DataTable MpeDataTableReference)
         {
-            //Here is where we call the main process for PowerBI steps
+            string[] ColumnsToDeleteInPowerBiFile = new String[]
+             {
+                "CPN", "Test - Volume In", "Test - Volume Out", "Test Yield", "SAP - Volume In", "SAP - Volume Out", "SAP Yield", "Equipment", "SummaryUsed"
+             };
 
             // Step 1: Load PowerBI file
-            //This file contains all lots data for GMAV part numbers
-            PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
+            DataTable PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
             //PowerBIDataTable = LoadExcelFileWithDateTestedAsDateFormat(FilesPathList["PowerBI FilePath"]);
-
-            //PrintDataTable(dataTable);
 
             //Step 2: Filter PowerBI file rows by PN and week
             string filter = "[MPN] LIKE '%" + comboBox1.Text + "%' AND [Date Code] LIKE '%" + comboBox2.Text + "%'";
-            PowerBIFilteredRowsByPnAndWeek = PowerBIDataTable.Select(filter);
-
-            /* Just for view/debug
-            foreach(DataRow row in PowerBIFilteredRows)
-            {
-                Debug.WriteLine(row["Lot Code"]);
-            }
-            */
+            DataRow[] PowerBIFilteredRowsByPnAndWeek = PowerBIDataTable.Select(filter);
 
             //Step 3: Remove columns that we don't need for the report
             //These columns of PowerBI file are either empty or not necessary
@@ -229,27 +214,24 @@ namespace MPE_Project
             PowerBIFilteredRowsByPnAndWeek[0].Table.Columns.Add("APN", typeof(string)).SetOrdinal(ApnColumnIndex);
             foreach (DataRow row in PowerBIFilteredRowsByPnAndWeek)
             {
-                row.SetField(ApnColumnIndex, apn.ToString());
-                row.SetField(XcodeColumnIndex, xcode.ToString());
+                row.SetField(ApnColumnIndex, MpeDataTableReference.Rows[0]["APN"].ToString());
+                row.SetField(XcodeColumnIndex, MpeDataTableReference.Rows[0]["Program Name"].ToString());
             }
+            return PowerBIFilteredRowsByPnAndWeek;
         }
         /// <summary>
         /// This method is used to search GMAVs in the PowerBI file using a list of gmavs of the part number extracted by the MPE file
         /// </summary>
-        private void SearchForGmavsInPowerBIFile()
+        private DataRow[] SearchForGmavsInPowerBIFile(DataTable MpeDataTableReference, DataTable PowerBIDataTable,DataRow[] PowerBIFilteredRowsByPnAndWeek, IEnumerable<DataColumn> MpeListOfBins)
         {
             //Step 6: Remove unused bins and keep the needed ones from PowerBI File
             /*For this process, we will look into PowerBI file and delete columns which don't contain the necessary information for the pn report */
             var PowerBIGmavList = PowerBIDataTable.Columns
                 .Cast<DataColumn>()
                 .Where(column => column.ColumnName.Contains("Bin")); //Get columns containing 'Bin' word in the header name
-            var PowerBIGmavValues = PowerBIGmavList.Select(column => PowerBIFilteredRowsByPnAndWeek[0][column]); //Get values from the Bin columns
 
-            var MpeListOfBinNumbers = MpeDataTable.Columns
-                .Cast<DataColumn>()
-                .Where(column => column.ColumnName.EndsWith("_Number") && !string.IsNullOrEmpty(MpeDataTable.Rows[0][column].ToString()));  //Header names where there is a gmav for Bin_Number (no empty nor null values)
             var MpeBinNumberValues = MpeListOfBins
-                .Select(column => MpeDataTable.Rows[0][column])
+                .Select(column => MpeDataTableReference.Rows[0][column])
                 .Where(column => !string.IsNullOrEmpty(column.ToString())); //Get bin_number and bin_name columns with data from mpe file 
             //var alo = MpeBinNumberValues.Where(column => !string.IsNullOrEmpty(column.ToString()));
 
@@ -277,9 +259,14 @@ namespace MPE_Project
             {
                 PowerBIDataTable.Columns.Remove(column);
             }
-
+            return PowerBIFilteredRowsByPnAndWeek;
         }
-        private void RemoveDuplicates()
+        /// <summary>
+        /// Method to remove duplicated lots (deprecated).
+        /// </summary>
+        /// <param name="PowerBIFilteredRowsByPnAndWeek"></param>
+        /// <returns></returns>
+        private DataRow[] RemoveDuplicates(DataTable PowerBIDataTable, DataRow[] PowerBIFilteredRowsByPnAndWeek)
         {
             var duplicateGroupsToDelete = PowerBIFilteredRowsByPnAndWeek.AsEnumerable()
                 .GroupBy(row => row.Field<string>("Lot Code"))
@@ -312,8 +299,12 @@ namespace MPE_Project
                 }
             }
             */
+            return PowerBIFilteredRowsByPnAndWeek;
         }
-        private void RenameColumnsOfPowerBI()
+        /// <summary>
+        /// Method to rename bin columns in the power bi datatable and its children
+        /// </summary>
+        private DataRow[] RenameColumnsOfPowerBI(DataTable PowerBIDataTable, DataRow[] PowerBIFilteredRowsByPnAndWeek)
         {
             //Step 1: Rename bin column names in power bi file
             var BinHeaderColumns = PowerBIDataTable.Columns
@@ -394,20 +385,15 @@ namespace MPE_Project
                 }
                 a++;
             }
+
+            return PowerBIFilteredRowsByPnAndWeek; 
         }
-        private string GetWeekNumber()
-        {
-            string weekNumber = "";
-            foreach (char character in comboBox2.Text)
-            {
-                if (char.IsNumber(character))
-                {
-                    weekNumber = string.Concat(weekNumber, character);
-                }
-            }
-            return weekNumber;
-        }
-        private void SortDescendingByDateTestedColumn()
+        /// <summary>
+        /// Sort the rows by date tested column from newer to older
+        /// </summary>
+        /// <param name="PowerBIFilteredRowsByPnAndWeek"></param>
+        /// <returns></returns>
+        private DataRow[] SortDescendingByDateTestedColumn(DataRow[] PowerBIFilteredRowsByPnAndWeek)
         {
             List<DataRow> PowerBiReadyToExport = PowerBIFilteredRowsByPnAndWeek.OrderBy(row => (DateTime)row["Date Tested"]).ToList();
             PowerBiReadyToExport.Sort((row1, row2) =>
@@ -417,9 +403,9 @@ namespace MPE_Project
                 return DateTime.Compare(date2, date1);
             });
             PowerBiReadyToExport.CopyTo(PowerBIFilteredRowsByPnAndWeek, 0);
+            return PowerBIFilteredRowsByPnAndWeek;
         }
-
-        private void OffshoreReport()
+        private DataTable OffshoreProcess(DataTable MpeDataTable)
         {
             //Get the datatables of each worksheets
             string[] sheetNameTargets = { comboBox1.Text, comboBox1.Text + "A", comboBox1.Text + "B" };
@@ -435,9 +421,9 @@ namespace MPE_Project
             foreach (DataTable OffshoreDataTableCurrent in ListOfDataTables)
             {
                 //Move data from each offshore datatable to mpe report
-                foreach(DataRow dataRowOffshoreToIterate in OffshoreDataTableCurrent.Rows)
+                foreach (DataRow dataRowOffshoreToIterate in OffshoreDataTableCurrent.Rows)
                 {
-                    if(dataRowOffshoreToIterate.Table.Rows.IndexOf(dataRowOffshoreToIterate) != 0)
+                    if (dataRowOffshoreToIterate.Table.Rows.IndexOf(dataRowOffshoreToIterate) != 0)
                     {
                         DataRow dataRowNewMpe = NewMpeReport.NewRow();
 
@@ -447,7 +433,7 @@ namespace MPE_Project
                         dataRowNewMpe["Test Program Name"] = dataRowOffshoreToIterate[offshoreColumnNames[4]].ToString();
                         dataRowNewMpe["Lot Qty"] = dataRowOffshoreToIterate[offshoreColumnNames[5]].ToString();
 
-                        double yield = Math.Round(Convert.ToDouble(dataRowOffshoreToIterate[offshoreColumnNames[7]].ToString())*100,2);
+                        double yield = Math.Round(Convert.ToDouble(dataRowOffshoreToIterate[offshoreColumnNames[7]].ToString()) * 100, 2);
                         dataRowNewMpe["Yield %"] = yield.ToString();
 
                         //Fill in the non-bin empty columns the information that is duplicated
@@ -467,19 +453,19 @@ namespace MPE_Project
                         var OffshoreBinColumns = NewMpeReport.Columns
                             .Cast<DataColumn>()
                             .Where(column => column.ColumnName.Contains("BIN") && column.ColumnName.EndsWith("3") && !string.IsNullOrEmpty(MpeDataTable.Rows[0][column].ToString()));  //Header names where there is a gmav for Bin_Number (no empty nor null values)
-                       
-                        foreach(DataColumn MpeBinNumberValue in MpeListOfBinNumbers)
+
+                        foreach (DataColumn MpeBinNumberValue in MpeListOfBinNumbers)
                         {
                             string BinNumber = "BIN" + MpeDataTable.Rows[0][MpeBinNumberValue.ColumnName];
                             var offshoreColumnNumber = OffshoreDataTableCurrent.Columns
                                 .Cast<DataColumn>()
                                 .Where(column => column.ColumnName.StartsWith(BinNumber)); //get the columns with the bin number
-                            
+
                             string filter = "[SWKS LOTNO] LIKE '%" + dataRowNewMpe["Lot Code"] + "%'"; //filter on offshore datatable
                             DataRow dataRowToGetDataFromOffshore = OffshoreDataTableCurrent.Select(filter).Single<DataRow>(); //get datarow of offshore datatable by lot
 
-                            short indexOfstring = (short) MpeBinNumberValue.ColumnName.IndexOf("_");
-                            string substringBinX = MpeBinNumberValue.ColumnName.Substring(0, indexOfstring+1);
+                            short indexOfstring = (short)MpeBinNumberValue.ColumnName.IndexOf("_");
+                            string substringBinX = MpeBinNumberValue.ColumnName.Substring(0, indexOfstring + 1);
                             string concat; double doubleToConvert;
 
                             foreach (DataColumn dataColumn in offshoreColumnNumber)
@@ -508,6 +494,20 @@ namespace MPE_Project
                     }
                 }
             }
+
+            return NewMpeReport;
+        }
+        private string GetWeekNumber()
+        {
+            string weekNumber = "";
+            foreach (char character in comboBox2.Text)
+            {
+                if (char.IsNumber(character))
+                {
+                    weekNumber = string.Concat(weekNumber, character);
+                }
+            }
+            return weekNumber;
         }
         private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {

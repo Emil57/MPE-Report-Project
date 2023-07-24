@@ -65,15 +65,15 @@ public class CsvFiles
     /// </summary>
     /// <param name="dataRows">PowerBi datarows to export</param>
     /// <param name="filePath">File name and path where it'll be stored</param>
-    public static void ExportCsvFile(DataRow[] dataRows, string filePath)
+    public static void ExportCsvFile(DataTable dataTable, string filePath)
     {
         using (StreamWriter writer = new(filePath))
         {
             // Write header row
-            writer.WriteLine(string.Join(",", dataRows[0].Table.Columns.Cast<DataColumn>().Select(col => col.ColumnName)));
+            writer.WriteLine(string.Join(",", dataTable.Rows[0].Table.Columns.Cast<DataColumn>().Select(col => col.ColumnName)));
 
             // Write data rows
-            foreach (DataRow row in dataRows)
+            foreach (DataRow row in dataTable.Rows)
             {
                 writer.WriteLine(string.Join(",", row.ItemArray));
             }
