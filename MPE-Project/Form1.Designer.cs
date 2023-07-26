@@ -258,11 +258,13 @@
             // 
             // dateTimePicker1
             // 
+            dateTimePicker1.Enabled = false;
             dateTimePicker1.Format = DateTimePickerFormat.Short;
             dateTimePicker1.Location = new Point(285, 322);
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new Size(122, 27);
             dateTimePicker1.TabIndex = 27;
+            dateTimePicker1.Visible = false;
             // 
             // checkBox1
             // 
@@ -290,31 +292,37 @@
             // 
             // dateTimePicker2
             // 
+            dateTimePicker2.Enabled = false;
             dateTimePicker2.Format = DateTimePickerFormat.Short;
             dateTimePicker2.Location = new Point(285, 355);
             dateTimePicker2.Name = "dateTimePicker2";
             dateTimePicker2.Size = new Size(122, 27);
             dateTimePicker2.TabIndex = 30;
+            dateTimePicker2.Visible = false;
             // 
             // label5
             // 
             label5.AutoSize = true;
+            label5.Enabled = false;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             label5.Location = new Point(236, 324);
             label5.Name = "label5";
             label5.Size = new Size(46, 20);
             label5.TabIndex = 31;
             label5.Text = "From:";
+            label5.Visible = false;
             // 
             // label10
             // 
             label10.AutoSize = true;
+            label10.Enabled = false;
             label10.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             label10.Location = new Point(254, 358);
             label10.Name = "label10";
             label10.Size = new Size(28, 20);
             label10.TabIndex = 32;
             label10.Text = "To:";
+            label10.Visible = false;
             // 
             // Form1
             // 

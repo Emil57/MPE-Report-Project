@@ -70,7 +70,7 @@ namespace MPE_Project
                 //Get week number 
                 string weekNumber = GetWeekNumber();
                 string path = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\", MpeDataTableReference.Rows[0]["Program Name"], "_", MpeDataTableReference.Rows[0]["MPN"], "_", MpeDataTableReference.Rows[0]["APN"], "_WW", weekNumber, "-mpe-raw.csv");
-                if(DataReport.Rows.Count > 0)
+                if (DataReport.Rows.Count > 0)
                 {
                     //To export file
                     ExportCsvFile(DataReport, path);
@@ -195,7 +195,7 @@ namespace MPE_Project
             // Step 1: Load PowerBI file
             DataTable PowerBIDataTable = LoadExcelFile(FilesPathList["PowerBI FilePath"]);
             //PowerBIDataTable = LoadExcelFileWithDateTestedAsDateFormat(FilesPathList["PowerBI FilePath"]);
-            
+
             //Step 2: Remove columns that we don't need for the report
             //These columns of PowerBI file are either empty or not necessary
             foreach (string columnName in ColumnsToDeleteInPowerBiFile)
@@ -209,7 +209,7 @@ namespace MPE_Project
                     Debug.WriteLine(ex.Message);
                 }
             }
-            
+
             //Step 3: Insert APN and XCode columns in PowerBI file (later exported as MPE report)
             byte ApnColumnIndex = 2, XcodeColumnIndex = 4;
             PowerBIDataTable.Columns.Add("APN", typeof(string)).SetOrdinal(ApnColumnIndex);
@@ -478,7 +478,7 @@ namespace MPE_Project
                             short indexOfstring = (short)MpeBinNumberValue.ColumnName.IndexOf("_");
                             string substringBinX = MpeBinNumberValue.ColumnName.Substring(0, indexOfstring + 1);
                             string concat; double doubleToConvert;
-                            
+
 
                             foreach (DataColumn dataColumn in offshoreColumnNumber)
                             {
