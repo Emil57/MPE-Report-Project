@@ -49,6 +49,7 @@ public class ExcelStructure
     /// <returns></returns>
     public static List<DataTable> LoadOffshoreFile(string filePath, string[] targetSheetNames)
     {
+        bool sheetEmpty = false;
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
         List<DataTable> dataTables = new List<DataTable>();
@@ -70,6 +71,11 @@ public class ExcelStructure
                     {
                         string? headerText = worksheet.Cells[1, col].Value?.ToString();
                         dataTable.Columns.Add(headerText);
+                        if (string.IsNullOrEmpty(headerText))
+                        {
+                            sheetEmpty = true;
+                            break;
+                        }
                         if (headerText.Contains("BIN"))
                         {
                             for (int i = 2; i <=3; i++)
@@ -80,7 +86,10 @@ public class ExcelStructure
                         }
                     }
                     //PrintDataTable(dataTable);
-
+                    if(sheetEmpty)
+                    {
+                        break;
+                    }
                     // Read the data from the worksheet and populate the DataTable
                     for (int row = 2; row <= totalRows; row++)
                     {

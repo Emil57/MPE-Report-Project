@@ -212,9 +212,9 @@
             label2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             label2.Location = new Point(23, 266);
             label2.Name = "label2";
-            label2.Size = new Size(88, 40);
+            label2.Size = new Size(93, 40);
             label2.TabIndex = 24;
-            label2.Text = "Ofshore File\r\n(Optional)";
+            label2.Text = "Offshore File\r\n(Optional)";
             // 
             // button2
             // 
