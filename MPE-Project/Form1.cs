@@ -76,6 +76,10 @@ namespace MPE_Project
                     ExportCsvFile(DataReport, path);
                     MessageBox.Show("MPE Report Succesfully Done!" + "\n" + "New path: " + path, "Results", MessageBoxButtons.OK);
                 }
+                else
+                {
+                    MessageBox.Show("No data available in this file to create a report!\n" + "Try another either offshore or power bi file", "Results", MessageBoxButtons.OK);
+                }
             }
             else
             {
