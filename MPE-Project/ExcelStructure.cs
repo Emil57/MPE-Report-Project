@@ -70,19 +70,27 @@ public class ExcelStructure
                     for (int col = 1; col < totalColumns; col++)
                     {
                         string? headerText = worksheet.Cells[1, col].Value?.ToString();
-                        dataTable.Columns.Add(headerText);
                         if (string.IsNullOrEmpty(headerText))
                         {
                             sheetEmpty = true;
                             break;
                         }
-                        if (headerText.Contains("BIN"))
+                        else if (headerText.Contains("BIN"))
                         {
-                            for (int i = 2; i <=3; i++)
+                            for (int i = 2; i <= 3; i++)
                             {
                                 dataTable.Columns.Add(headerText + i.ToString());
                             }
                             col += 2;
+                        }
+                        else if (headerText.Equals("TESTDATE"))
+                        {                           
+                            dataTable.Columns.Add(headerText, typeof(DateTime));
+                            dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;
+                        }
+                        else
+                        {
+                            dataTable.Columns.Add(headerText);
                         }
                     }
                     //PrintDataTable(dataTable);
@@ -96,7 +104,15 @@ public class ExcelStructure
                         DataRow dataRow = dataTable.NewRow();
                         for (int col = 1; col < totalColumns; col++)
                         {
-                            dataRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
+                            try
+                            {
+                                dataRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Convierte el tipo de dato de la columna 'TESTDATE' a 'Short Date' en el archivo de offshore", "Problema en Offshore Report");
+                                throw new Exception(ex.Message);
+                            }
                         }
                         dataTable.Rows.Add(dataRow);
                     }
@@ -147,7 +163,7 @@ public class ExcelStructure
             if (headerText.Equals("Date Tested"))
             {
                 dataTable.Columns.Add(headerText, typeof(DateTime));
-                dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;
+                dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;  
             }
             //-------------------------- ends here --------------
             else
@@ -172,9 +188,10 @@ public class ExcelStructure
                         dataRow[col - 1] = Convert.ToDateTime(cell).ToShortDateString();
                         dataRow[col - 1] = Convert.ToDateTime(cell).Date;
                     }
-                    catch (InvalidCastException ex)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message + "\nNo se puede convertir");
+                        MessageBox.Show("Convierte el tipo de dato de la columna 'Date Tested' a 'Short Date' en el archivo autocounting", "Error en Archivo PowerBI");
+                        throw new Exception(ex.Message);
                     }
                 }
                 //-------------------------- ends here --------------

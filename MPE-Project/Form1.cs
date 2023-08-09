@@ -441,6 +441,7 @@ namespace MPE_Project
                         dataRowNewMpe["Date Tested"] = dataRowOffshoreToIterate[offshoreColumnNames[0]];
                         dataRowNewMpe["Lot Code"] = dataRowOffshoreToIterate[offshoreColumnNames[2]].ToString();
                         dataRowNewMpe["Test Program Name"] = dataRowOffshoreToIterate[offshoreColumnNames[4]].ToString();
+                        dataRowNewMpe["Tester Platform"] = GetTestPlatform(dataRowNewMpe["Test Program Name"].ToString());
                         dataRowNewMpe["Lot Qty"] = dataRowOffshoreToIterate[offshoreColumnNames[5]].ToString();
 
                         double yield = Math.Round(Convert.ToDouble(dataRowOffshoreToIterate[offshoreColumnNames[7]].ToString()) * 100, 2);
@@ -521,6 +522,29 @@ namespace MPE_Project
             }
             return weekNumber;
         }
+
+        private string GetTestPlatform(string testProgram)
+        {
+            string platform = "";
+            if (testProgram.Contains("A93"))
+            {
+                platform = "A93";
+            }
+            else if (testProgram.Contains("DRG") | testProgram.Contains("RED") | testProgram.Contains("RDB"))
+            {
+                platform = "DRAGON";
+            }
+            else if(testProgram.Contains("FIT") | testProgram.Contains("FAST"))
+            {
+                platform = "FAST";
+            }
+            else 
+            {
+                platform = "0";
+            }
+            return platform;
+        }
+
         private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
             //When Validate button is checked
