@@ -59,6 +59,7 @@ public class ExcelModel
 
             foreach (string sheetName in targetSheetNames)
             {
+                sheetEmpty = false;
                 ExcelWorksheet worksheet = workbook.Worksheets[sheetName];
 
                 if (worksheet != null)
@@ -70,7 +71,7 @@ public class ExcelModel
                     for (int col = 1; col < totalColumns; col++)
                     {
                         string? headerText = worksheet.Cells[1, col].Value?.ToString();
-                        if (string.IsNullOrEmpty(headerText))
+                        if ( string.IsNullOrEmpty(headerText) )
                         {
                             sheetEmpty = true;
                             break;
@@ -90,10 +91,6 @@ public class ExcelModel
                     }
                     //PrintDataTable(dataTable);
                     totalColumns = dataTable.Columns.Count;
-                    if(sheetEmpty)
-                    {
-                        break;
-                    }
                     // Read the data from the worksheet and populate the DataTable
                     for (int row = 3; row <= totalRows; row++)
                     {
@@ -111,7 +108,10 @@ public class ExcelModel
                         }
                         dataTable.Rows.Add(dataRow);
                     }
-                    dataTables.Add(dataTable);
+                    if (!sheetEmpty)
+                    {
+                        dataTables.Add(dataTable);
+                    }
                 }
             }
         }
