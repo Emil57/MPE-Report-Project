@@ -5,8 +5,16 @@ using System.IO;
 using System.Globalization;
 using OfficeOpenXml;
 
-public class CsvFiles
+/// <summary>
+/// This class contains the methods to load and and export .csv files
+/// </summary>
+public class CsvModel
 {
+    /// <summary>
+    /// Method to load data from .csv to a datatable data type structured
+    /// </summary>
+    /// <param name="filePath">Location where file is stored</param>
+    /// <returns>A datatable loaded with data from the file</returns>
     public static DataTable LoadCsvFile(string filePath)
     {
         DataTable dataTable = new();
@@ -14,9 +22,6 @@ public class CsvFiles
         using (var reader  = new StreamReader(filePath))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
-            // Configure CsvHelper
-            //csv.Configuration.HasHeaderRecord = true;
-
             // Read CSV headers
             csv.Read();
             csv.ReadHeader();
@@ -54,21 +59,25 @@ public class CsvFiles
         MPEws.Cells[1, 1, MPEws.Dimension.Rows, MPEws.Dimension.Columns].SaveToText(file, formatOut);
         Debug.WriteLine("File " + Path.GetFileName(NewMpeFilePath) + " Closed!");
     }
-
-    public static void ExportCsvFile(DataRow[] dataRows, string filePath)
+    
+    /// <summary>
+    /// Method to export datarows[] array as .csv file for mpe format file
+    /// </summary>
+    /// <param name="dataRows">PowerBi datarows to export</param>
+    /// <param name="filePath">File name and path where it'll be stored</param>
+    public static void ExportCsvFile(DataTable dataTable, string filePath)
     {
         using (StreamWriter writer = new(filePath))
         {
             // Write header row
-            writer.WriteLine(string.Join(",", dataRows[0].Table.Columns.Cast<DataColumn>().Select(col => col.ColumnName)));
+            writer.WriteLine(string.Join(",", dataTable.Rows[0].Table.Columns.Cast<DataColumn>().Select(col => col.ColumnName)));
 
             // Write data rows
-            foreach (DataRow row in dataRows)
+            foreach (DataRow row in dataTable.Rows)
             {
                 writer.WriteLine(string.Join(",", row.ItemArray));
             }
         }
-
         Debug.WriteLine("CSV file exported successfully.");
     }
 }
