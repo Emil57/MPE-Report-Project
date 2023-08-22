@@ -41,6 +41,9 @@ paket.lock
 *.user
 *.userprefs
 *.sln.docstates
+<<<<<<< HEAD
 
 
 MPE-Project/bin/
+=======
+>>>>>>> offshoreFeature
