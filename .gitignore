@@ -1,0 +1,43 @@
+# Binaries
+*.exe
+*.dll
+*.pdb
+*.dll.config
+
+# Visual Studio files
+.vscode/
+.vs/
+/bin/
+/obj/
+*.user
+*.suo
+*.sln.docstates
+*.userprefs
+
+# Package folders
+packages/
+
+# User-specific files
+*.suo
+*.user
+*.userprefs
+*.sln.docstates
+
+# Compiled output
+bin/
+obj/
+
+# NuGet
+*.nupkg
+*.paket.restore
+paket-files/
+paket.lock
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.userprefs
+*.sln.docstates
