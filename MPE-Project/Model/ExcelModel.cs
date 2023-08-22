@@ -9,7 +9,7 @@ using System.Globalization;
 /// <summary>
 /// This is the class to contains the methods to load and export excel files using epplus library
 /// </summary>
-public class ExcelStructure
+public class ExcelModel
 {
     /*
     public static DataTable LoadExcelFile(string filePath)
@@ -77,16 +77,11 @@ public class ExcelStructure
                         }
                         else if (headerText.Contains("BIN"))
                         {
-                            for (int i = 2; i <= 3; i++)
+                            for (int i = 1; i <= 3; i++)
                             {
                                 dataTable.Columns.Add(headerText + i.ToString());
                             }
                             col += 2;
-                        }
-                        else if (headerText.Equals("TESTDATE"))
-                        {                           
-                            dataTable.Columns.Add(headerText, typeof(DateTime));
-                            dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;
                         }
                         else
                         {
@@ -94,12 +89,13 @@ public class ExcelStructure
                         }
                     }
                     //PrintDataTable(dataTable);
+                    totalColumns = dataTable.Columns.Count;
                     if(sheetEmpty)
                     {
                         break;
                     }
                     // Read the data from the worksheet and populate the DataTable
-                    for (int row = 2; row <= totalRows; row++)
+                    for (int row = 3; row <= totalRows; row++)
                     {
                         DataRow dataRow = dataTable.NewRow();
                         for (int col = 1; col < totalColumns; col++)
@@ -110,7 +106,6 @@ public class ExcelStructure
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("Convierte el tipo de dato de la columna 'TESTDATE' a 'Short Date' en el archivo de offshore", "Problema en Offshore Report");
                                 throw new Exception(ex.Message);
                             }
                         }
@@ -141,7 +136,6 @@ public class ExcelStructure
             }
         }
     }
-
     /// <summary>
     /// Load excel file to a datatable
     /// </summary>
@@ -159,17 +153,7 @@ public class ExcelStructure
         for (int col = 1; col <= totalColumns; col++)
         {
             string? headerText = worksheet.Cells[1, col].Value?.ToString();
-            //-------------------------- Under test --------------
-            if (headerText.Equals("Date Tested"))
-            {
-                dataTable.Columns.Add(headerText, typeof(DateTime));
-                dataTable.Columns[dataTable.Columns.Count - 1].DateTimeMode = DataSetDateTime.UnspecifiedLocal;  
-            }
-            //-------------------------- ends here --------------
-            else
-            {
-                dataTable.Columns.Add(headerText);
-            }
+            dataTable.Columns.Add(headerText);
         }
 
         // Load data rows
@@ -179,26 +163,14 @@ public class ExcelStructure
             DataRow dataRow = dataTable.NewRow();
             for (int col = 1; col <= totalColumns; col++)
             {
-                var cell = worksheet.Cells[row, col].Value?.ToString();
-                //-------------------------- Under test --------------
-                if (col - 1 == dataTable.Columns.IndexOf("Date Tested"))
+                try
                 {
-                    try
-                    {
-                        dataRow[col - 1] = Convert.ToDateTime(cell).ToShortDateString();
-                        dataRow[col - 1] = Convert.ToDateTime(cell).Date;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Convierte el tipo de dato de la columna 'Date Tested' a 'Short Date' en el archivo autocounting", "Error en Archivo PowerBI");
-                        throw new Exception(ex.Message);
-                    }
-                }
-                //-------------------------- ends here --------------
-                else
-                {
+                    var cell = worksheet.Cells[row, col].Value?.ToString();
                     dataRow[col - 1] = cell;
-                }
+                } catch(Exception ex) 
+                {
+                    throw new Exception(ex.Message);
+                } 
             }
             dataTable.Rows.Add(dataRow);
         }

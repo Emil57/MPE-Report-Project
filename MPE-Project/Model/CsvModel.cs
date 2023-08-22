@@ -8,7 +8,7 @@ using OfficeOpenXml;
 /// <summary>
 /// This class contains the methods to load and and export .csv files
 /// </summary>
-public class CsvFiles
+public class CsvModel
 {
     /// <summary>
     /// Method to load data from .csv to a datatable data type structured

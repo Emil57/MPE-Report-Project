@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            button1 = new Button();
+            goButton = new Button();
             label1 = new Label();
-            radioButton1 = new RadioButton();
-            radioButton2 = new RadioButton();
-            comboBox1 = new ComboBox();
+            createRadioButton = new RadioButton();
+            validateRadioButton = new RadioButton();
+            partNumberComboBox = new ComboBox();
             label3 = new Label();
             label4 = new Label();
-            comboBox2 = new ComboBox();
+            weeekNumberComboBox = new ComboBox();
             label6 = new Label();
             button5 = new Button();
             textBox2 = new TextBox();
@@ -49,8 +49,8 @@
             label8 = new Label();
             label9 = new Label();
             dateTimePicker1 = new DateTimePicker();
-            checkBox1 = new CheckBox();
-            checkBox2 = new CheckBox();
+            offshoreCheckBox = new CheckBox();
+            mxliCheckBox = new CheckBox();
             dateTimePicker2 = new DateTimePicker();
             label5 = new Label();
             label10 = new Label();
@@ -58,14 +58,14 @@
             // 
             // button1
             // 
-            button1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point);
-            button1.Location = new Point(449, 321);
-            button1.Name = "button1";
-            button1.Size = new Size(113, 61);
-            button1.TabIndex = 0;
-            button1.Text = "Run";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += Button1_Click;
+            goButton.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            goButton.Location = new Point(449, 321);
+            goButton.Name = "button1";
+            goButton.Size = new Size(113, 61);
+            goButton.TabIndex = 0;
+            goButton.Text = "Run";
+            goButton.UseVisualStyleBackColor = true;
+            goButton.Click += Button1_Click;
             // 
             // label1
             // 
@@ -77,44 +77,44 @@
             label1.TabIndex = 1;
             label1.Text = "MPE Report Project";
             // 
-            // radioButton1
+            // createButton
             // 
-            radioButton1.AutoSize = true;
-            radioButton1.Checked = true;
-            radioButton1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            radioButton1.Location = new Point(38, 131);
-            radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(73, 24);
-            radioButton1.TabIndex = 6;
-            radioButton1.TabStop = true;
-            radioButton1.Text = "Create";
-            radioButton1.UseVisualStyleBackColor = true;
+            createRadioButton.AutoSize = true;
+            createRadioButton.Checked = true;
+            createRadioButton.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            createRadioButton.Location = new Point(38, 131);
+            createRadioButton.Name = "createButton";
+            createRadioButton.Size = new Size(73, 24);
+            createRadioButton.TabIndex = 6;
+            createRadioButton.TabStop = true;
+            createRadioButton.Text = "Create";
+            createRadioButton.UseVisualStyleBackColor = true;
             // 
             // radioButton2
             // 
-            radioButton2.AutoSize = true;
-            radioButton2.Enabled = false;
-            radioButton2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            radioButton2.Location = new Point(125, 131);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(84, 24);
-            radioButton2.TabIndex = 7;
-            radioButton2.Text = "Validate";
-            radioButton2.UseVisualStyleBackColor = true;
-            radioButton2.CheckedChanged += RadioButton2_CheckedChanged;
+            validateRadioButton.AutoSize = true;
+            validateRadioButton.Enabled = false;
+            validateRadioButton.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            validateRadioButton.Location = new Point(125, 131);
+            validateRadioButton.Name = "radioButton2";
+            validateRadioButton.Size = new Size(84, 24);
+            validateRadioButton.TabIndex = 7;
+            validateRadioButton.Text = "Validate";
+            validateRadioButton.UseVisualStyleBackColor = true;
+            validateRadioButton.CheckedChanged += RadioButton2_CheckedChanged;
             // 
             // comboBox1
             // 
-            comboBox1.DropDownHeight = 85;
-            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox1.FormattingEnabled = true;
-            comboBox1.IntegralHeight = false;
-            comboBox1.Items.AddRange(new object[] { "SKY53882-26", "SKY53884-13", "SKY53885-53", "SKY58440-11", "SKY58446-11", "SKY53903-13", "SKY53904-11", "SKY55507-11", "SKY58292-16", "SKY55210-16", "SKY59724-17", "SKY78268-17" });
-            comboBox1.Location = new Point(84, 321);
-            comboBox1.MaxDropDownItems = 4;
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(119, 28);
-            comboBox1.TabIndex = 8;
+            partNumberComboBox.DropDownHeight = 85;
+            partNumberComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            partNumberComboBox.FormattingEnabled = true;
+            partNumberComboBox.IntegralHeight = false;
+            partNumberComboBox.Items.AddRange(new object[] { "SKY53882-26", "SKY53884-13", "SKY53885-53", "SKY58440-11", "SKY58446-11", "SKY53903-13", "SKY53904-11", "SKY55507-11", "SKY58292-16", "SKY55210-16", "SKY59724-17", "SKY78268-17" });
+            partNumberComboBox.Location = new Point(84, 321);
+            partNumberComboBox.MaxDropDownItems = 4;
+            partNumberComboBox.Name = "comboBox1";
+            partNumberComboBox.Size = new Size(119, 28);
+            partNumberComboBox.TabIndex = 8;
             // 
             // label3
             // 
@@ -138,16 +138,16 @@
             // 
             // comboBox2
             // 
-            comboBox2.DropDownHeight = 85;
-            comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox2.FormattingEnabled = true;
-            comboBox2.IntegralHeight = false;
-            comboBox2.Items.AddRange(new object[] { "Wk01", "Wk02", "Wk03", "Wk04", "Wk05", "Wk06", "Wk07", "Wk08", "Wk09", "Wk10", "Wk11", "Wk12", "Wk13", "Wk14", "Wk15", "Wk16", "Wk17", "Wk18", "Wk19", "Wk20", "Wk21", "Wk22", "Wk23", "Wk24", "Wk25", "Wk26", "Wk27", "Wk28", "Wk29", "Wk30", "Wk31", "Wk32", "Wk33", "Wk34", "Wk35", "Wk36", "Wk37", "Wk38", "Wk39", "Wk40", "Wk41", "Wk42", "Wk43", "Wk44", "Wk45", "Wk46", "Wk47", "Wk48", "Wk49", "Wk50", "Wk51", "Wk52" });
-            comboBox2.Location = new Point(84, 356);
-            comboBox2.MaxDropDownItems = 4;
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(119, 28);
-            comboBox2.TabIndex = 10;
+            weeekNumberComboBox.DropDownHeight = 85;
+            weeekNumberComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            weeekNumberComboBox.FormattingEnabled = true;
+            weeekNumberComboBox.IntegralHeight = false;
+            weeekNumberComboBox.Items.AddRange(new object[] { "Wk01", "Wk02", "Wk03", "Wk04", "Wk05", "Wk06", "Wk07", "Wk08", "Wk09", "Wk10", "Wk11", "Wk12", "Wk13", "Wk14", "Wk15", "Wk16", "Wk17", "Wk18", "Wk19", "Wk20", "Wk21", "Wk22", "Wk23", "Wk24", "Wk25", "Wk26", "Wk27", "Wk28", "Wk29", "Wk30", "Wk31", "Wk32", "Wk33", "Wk34", "Wk35", "Wk36", "Wk37", "Wk38", "Wk39", "Wk40", "Wk41", "Wk42", "Wk43", "Wk44", "Wk45", "Wk46", "Wk47", "Wk48", "Wk49", "Wk50", "Wk51", "Wk52" });
+            weeekNumberComboBox.Location = new Point(84, 356);
+            weeekNumberComboBox.MaxDropDownItems = 4;
+            weeekNumberComboBox.Name = "comboBox2";
+            weeekNumberComboBox.Size = new Size(119, 28);
+            weeekNumberComboBox.TabIndex = 10;
             // 
             // label6
             // 
@@ -266,29 +266,29 @@
             dateTimePicker1.TabIndex = 27;
             dateTimePicker1.Visible = false;
             // 
-            // checkBox1
+            // offshoreCheckBox1
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(409, 161);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(88, 24);
-            checkBox1.TabIndex = 28;
-            checkBox1.Text = "Offshore";
-            checkBox1.UseVisualStyleBackColor = true;
-            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            offshoreCheckBox.AutoSize = true;
+            offshoreCheckBox.Location = new Point(409, 161);
+            offshoreCheckBox.Name = "offshoreCheckBox1";
+            offshoreCheckBox.Size = new Size(88, 24);
+            offshoreCheckBox.TabIndex = 28;
+            offshoreCheckBox.Text = "Offshore";
+            offshoreCheckBox.UseVisualStyleBackColor = true;
+            offshoreCheckBox.CheckedChanged += checkBox1_CheckedChanged;
             // 
-            // checkBox2
+            // mxliCheckBox2
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Checked = true;
-            checkBox2.CheckState = CheckState.Checked;
-            checkBox2.Location = new Point(503, 161);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(59, 24);
-            checkBox2.TabIndex = 29;
-            checkBox2.Text = "Mxli";
-            checkBox2.UseVisualStyleBackColor = true;
-            checkBox2.CheckedChanged += checkBox2_CheckedChanged;
+            mxliCheckBox.AutoSize = true;
+            mxliCheckBox.Checked = true;
+            mxliCheckBox.CheckState = CheckState.Checked;
+            mxliCheckBox.Location = new Point(503, 161);
+            mxliCheckBox.Name = "mxliCheckBox2";
+            mxliCheckBox.Size = new Size(59, 24);
+            mxliCheckBox.TabIndex = 29;
+            mxliCheckBox.Text = "Mxli";
+            mxliCheckBox.UseVisualStyleBackColor = true;
+            mxliCheckBox.CheckedChanged += checkBox2_CheckedChanged;
             // 
             // dateTimePicker2
             // 
@@ -333,8 +333,8 @@
             Controls.Add(label10);
             Controls.Add(label5);
             Controls.Add(dateTimePicker2);
-            Controls.Add(checkBox2);
-            Controls.Add(checkBox1);
+            Controls.Add(mxliCheckBox);
+            Controls.Add(offshoreCheckBox);
             Controls.Add(dateTimePicker1);
             Controls.Add(label9);
             Controls.Add(label8);
@@ -348,13 +348,13 @@
             Controls.Add(button5);
             Controls.Add(textBox2);
             Controls.Add(label4);
-            Controls.Add(comboBox2);
+            Controls.Add(weeekNumberComboBox);
             Controls.Add(label3);
-            Controls.Add(comboBox1);
-            Controls.Add(radioButton2);
-            Controls.Add(radioButton1);
+            Controls.Add(partNumberComboBox);
+            Controls.Add(validateRadioButton);
+            Controls.Add(createRadioButton);
             Controls.Add(label1);
-            Controls.Add(button1);
+            Controls.Add(goButton);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "MPE Report Project";
@@ -364,31 +364,32 @@
         }
 
         #endregion
-
-        private Button button1;
         private Label label1;
-        private RadioButton radioButton1;
-        private RadioButton radioButton2;
-        private ComboBox comboBox1;
         private Label label3;
         private Label label4;
-        private ComboBox comboBox2;
         private Label label6;
-        private Button button5;
-        private TextBox textBox2;
         private Label label7;
-        private Button button7;
-        private TextBox textBox3;
         private Label label2;
-        private Button button2;
-        private TextBox textBox1;
         private Label label8;
         private Label label9;
         private DateTimePicker dateTimePicker1;
-        private CheckBox checkBox1;
-        private CheckBox checkBox2;
         private DateTimePicker dateTimePicker2;
         private Label label5;
         private Label label10;
+
+        //used for access outside this class
+        public static RadioButton validateRadioButton;
+        public static RadioButton createRadioButton;
+        public static CheckBox offshoreCheckBox;
+        public static CheckBox mxliCheckBox;
+        public static Button goButton;
+        public static ComboBox partNumberComboBox;
+        public static ComboBox weeekNumberComboBox;
+        public static Button button5;
+        public static TextBox textBox2;
+        public static Button button7;
+        public static TextBox textBox3;
+        public static Button button2;
+        public static TextBox textBox1;
     }
 }
