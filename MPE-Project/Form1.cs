@@ -66,7 +66,7 @@ namespace MPE_Project
             label4.Enabled = !validateRadioButton.Checked;
             label5.Enabled = !validateRadioButton.Checked;
             partNumberComboBox.Enabled = !validateRadioButton.Checked;
-            weeekNumberComboBox.Enabled = !validateRadioButton.Checked;
+            weekNumberComboBox.Enabled = !validateRadioButton.Checked;
             label2.Enabled = !validateRadioButton.Checked;
             textBox1.Enabled = !validateRadioButton.Checked;
             button2.Enabled = !validateRadioButton.Checked;
@@ -76,12 +76,15 @@ namespace MPE_Project
             label6.Enabled = mxliCheckBox.Checked;
             textBox2.Enabled = mxliCheckBox.Checked;
             button5.Enabled = mxliCheckBox.Checked;
+            label4.Enabled = mxliCheckBox.Checked;
+            weekNumberComboBox.Enabled = mxliCheckBox.Checked;
         }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             label2.Enabled = offshoreCheckBox.Checked;
             textBox1.Enabled = offshoreCheckBox.Checked;
             button2.Enabled = offshoreCheckBox.Checked;
+           
         }
     }
 }

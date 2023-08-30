@@ -117,7 +117,7 @@ namespace MPE_Project.DAO
         private static string GetWeekNumber()
         {
             string weekNumber = "";
-            foreach (char character in weeekNumberComboBox.Text)
+            foreach (char character in weekNumberComboBox.Text)
             {
                 if (char.IsNumber(character))
                 {

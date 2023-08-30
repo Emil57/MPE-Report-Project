@@ -36,7 +36,7 @@
             partNumberComboBox = new ComboBox();
             label3 = new Label();
             label4 = new Label();
-            weeekNumberComboBox = new ComboBox();
+            weekNumberComboBox = new ComboBox();
             label6 = new Label();
             button5 = new Button();
             textBox2 = new TextBox();
@@ -138,16 +138,16 @@
             // 
             // comboBox2
             // 
-            weeekNumberComboBox.DropDownHeight = 85;
-            weeekNumberComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            weeekNumberComboBox.FormattingEnabled = true;
-            weeekNumberComboBox.IntegralHeight = false;
-            weeekNumberComboBox.Items.AddRange(new object[] { "Wk01", "Wk02", "Wk03", "Wk04", "Wk05", "Wk06", "Wk07", "Wk08", "Wk09", "Wk10", "Wk11", "Wk12", "Wk13", "Wk14", "Wk15", "Wk16", "Wk17", "Wk18", "Wk19", "Wk20", "Wk21", "Wk22", "Wk23", "Wk24", "Wk25", "Wk26", "Wk27", "Wk28", "Wk29", "Wk30", "Wk31", "Wk32", "Wk33", "Wk34", "Wk35", "Wk36", "Wk37", "Wk38", "Wk39", "Wk40", "Wk41", "Wk42", "Wk43", "Wk44", "Wk45", "Wk46", "Wk47", "Wk48", "Wk49", "Wk50", "Wk51", "Wk52" });
-            weeekNumberComboBox.Location = new Point(84, 356);
-            weeekNumberComboBox.MaxDropDownItems = 4;
-            weeekNumberComboBox.Name = "comboBox2";
-            weeekNumberComboBox.Size = new Size(119, 28);
-            weeekNumberComboBox.TabIndex = 10;
+            weekNumberComboBox.DropDownHeight = 85;
+            weekNumberComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            weekNumberComboBox.FormattingEnabled = true;
+            weekNumberComboBox.IntegralHeight = false;
+            weekNumberComboBox.Items.AddRange(new object[] { "Wk01", "Wk02", "Wk03", "Wk04", "Wk05", "Wk06", "Wk07", "Wk08", "Wk09", "Wk10", "Wk11", "Wk12", "Wk13", "Wk14", "Wk15", "Wk16", "Wk17", "Wk18", "Wk19", "Wk20", "Wk21", "Wk22", "Wk23", "Wk24", "Wk25", "Wk26", "Wk27", "Wk28", "Wk29", "Wk30", "Wk31", "Wk32", "Wk33", "Wk34", "Wk35", "Wk36", "Wk37", "Wk38", "Wk39", "Wk40", "Wk41", "Wk42", "Wk43", "Wk44", "Wk45", "Wk46", "Wk47", "Wk48", "Wk49", "Wk50", "Wk51", "Wk52" });
+            weekNumberComboBox.Location = new Point(84, 356);
+            weekNumberComboBox.MaxDropDownItems = 4;
+            weekNumberComboBox.Name = "comboBox2";
+            weekNumberComboBox.Size = new Size(119, 28);
+            weekNumberComboBox.TabIndex = 10;
             // 
             // label6
             // 
@@ -348,7 +348,7 @@
             Controls.Add(button5);
             Controls.Add(textBox2);
             Controls.Add(label4);
-            Controls.Add(weeekNumberComboBox);
+            Controls.Add(weekNumberComboBox);
             Controls.Add(label3);
             Controls.Add(partNumberComboBox);
             Controls.Add(validateRadioButton);
@@ -384,7 +384,7 @@
         public static CheckBox mxliCheckBox;
         public static Button goButton;
         public static ComboBox partNumberComboBox;
-        public static ComboBox weeekNumberComboBox;
+        public static ComboBox weekNumberComboBox;
         public static Button button5;
         public static TextBox textBox2;
         public static Button button7;

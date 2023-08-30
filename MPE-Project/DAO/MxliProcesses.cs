@@ -104,7 +104,7 @@ namespace MPE_Project.DAO
         private static DataRow[] SearchForGmavsInPowerBIFile(DataTable MpeDataTableReference, DataTable PowerBIDataTable, IEnumerable<DataColumn> MpeListOfBins)
         {
             //Step 4: Filter PowerBI file rows by PN and week
-            string filter = "[MPN] LIKE '%" + partNumberComboBox.Text + "%' AND [Date Code] LIKE '%" + weeekNumberComboBox.Text + "%'";
+            string filter = "[MPN] LIKE '%" + partNumberComboBox.Text + "%' AND [Date Code] LIKE '%" + weekNumberComboBox.Text + "%'";
             DataRow[] PowerBIFilteredRowsByPnAndWeek = PowerBIDataTable.Select(filter);
 
             //Step 6: Remove unused bins and keep the needed ones from PowerBI File
